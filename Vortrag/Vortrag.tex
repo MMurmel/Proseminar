@@ -1,0 +1,172 @@
+\documentclass{beamer}
+
+%DEFAULT
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+%theming
+\usetheme{Dresden}
+\usecolortheme{dolphin}
+
+%GRAPHING
+\usepackage{tikz-network}
+%BIBTEX
+\usepackage[numbers,square]{natbib}
+
+%META-INFORMATION
+\author{Maximilian Moeller}
+\title{Maximaler Fluss in Flussnetzwerken}
+\date{\today}
+
+%ALIAS
+\newcommand{\ff}{\textsc{Ford-Fulkerson}}
+\newcommand{\pr}{Push/Relabel}
+
+\begin{document}
+\begin{frame}
+\maketitle
+\center\large Proseminar Theoretische Informatik 2020
+\end{frame}
+
+\begin{frame}
+\frametitle{Gliederung}
+\tableofcontents
+\end{frame}
+
+
+\section{Motivation}
+\begin{frame}
+\textit{
+\begin{itemize}
+\item Grafik: Graph mit Kapazitäten
+\item Einsatz überall dort, wo Mengen auf mehreren Wegen transportiert werden
+\item Beispiel Rechnernetze: wie viele Pakete (= Informationen) können von A nach B fließen
+\item Unterscheidung vom Kapazitätsproblem
+\item Verweis auf \citep{Cormen09}
+\end{itemize}
+}
+\end{frame}
+
+
+\section{Grundlagen}
+\subsection{Flussnetzwerke}
+\begin{frame}
+\frametitle{Flussnetzwerke}
+\textit{
+\begin{itemize}
+\item Grafik: Flussnetzwerk (FN)
+\item verbotene Spezialfälle (anti-parallel, reflexiv)
+\item Quelle, Senke, $s \to v \to t$
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}
+\frametitle{Spezialfälle}
+\textit{
+\begin{itemize}
+\item FN mit antiparallelen Kanten
+\item FN mit mehreren Quellen/Senken
+\end{itemize}
+}
+\end{frame}
+
+
+\subsection{Fluss}
+\begin{frame}
+\frametitle{Fluss in Flussnetzwerken}
+\textit{
+\begin{itemize}
+\item Grafik: Flussnetzwerk mit Fluss
+\item Notation einführen
+\item Anforderungen an einen Fluss
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximaler-Fluss-Problem}
+\textit{
+\begin{itemize}
+\item Wert eines Flusses
+\item Grafiken mit leicht erkennbaren Werten der Flüsse
+\item maximaler-Fluss-Problem
+\end{itemize}
+}
+\end{frame}
+
+
+\section{weitere Theorie}
+\subsection{Restnetzwerke}
+\begin{frame}
+\frametitle{Restnetzwerke}
+\textit{
+\begin{itemize}
+\item Grafik: Restnetzwerk aus Flussnetzwerk und Fluss
+\item Erklärung: RN sind keine FN, aber Fluss trotzdem analog
+\item Erhöhung $f\uparrow f'$
+\end{itemize}
+}
+\end{frame}
+
+\subsection{Erweiterungspfade}
+\begin{frame}
+\frametitle{Erweiterungspfade}
+\textit{
+\begin{itemize}
+\item Grafik: Erweiterungspfad in $G_{f}$
+\item Erklärung: $f_{p}$ und $\lvert f\uparrow f_{p} \rvert > \lvert f\rvert$
+\item Überleitung zu \ff
+\end{itemize}
+}
+\end{frame}
+
+
+\section{Algorithmen}
+\subsection{Ford-Fulkerson}
+\begin{frame}
+\frametitle{\ff}
+\textit{
+\begin{itemize}
+\item Erklärung Algorithmus mit Vorwissen aus RN und Erweiterungspfade
+\item maximal? -> ja, wegen maxflow-mincut-Theorem (Erklärung reduzieren auf $\lvert f\rvert$ max. $\Leftrightarrow$ kein Pfad in $G_{f}$)
+\item Terminierung
+\item Verbesserungen (Edmonds-Karp-Algorithmus)
+\end{itemize}
+}
+\end{frame}
+
+\subsection{Push-Relabel}
+\begin{frame}
+\frametitle{\pr}
+\textit{
+\begin{itemize}
+\item Intuition
+\item Vorfluss -> verletzt ggf. Flusserhaltung
+\item Höhe
+\item Operationen
+\item generischer \pr -Algorithmus
+\item Verbesserungen (Relabel-to-Front)
+\end{itemize}
+}
+\end{frame}
+
+\subsection{Vergleich}
+\begin{frame}
+\textit{
+\begin{itemize}
+\item Laufzeiten
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}
+\bibliography{../../references}
+\bibliographystyle{ieeetr}
+\end{frame}
+
+\end{document}
