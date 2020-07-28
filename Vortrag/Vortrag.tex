@@ -47,6 +47,7 @@
 
 \section{Motivation}
 \begin{frame}
+\frametitle{Motivation}
 \begin{columns}
 \begin{column}{.4\textwidth}
 \begin{itemize}
@@ -264,7 +265,7 @@ Wert $\lvert f \rvert$ eines Flusses $f$:
 \begin{equation}
 \lvert f \rvert = \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s) \nonumber
 \end{equation}
-Meist nur $\lvert f \rvert = \sum_{u\in V} f(s,u)$, da oft keine eingehenden Kanten zu $s$.
+\note{Meist nur linker Term.}
 \end{column}
 \hfill
 \pause
@@ -303,17 +304,6 @@ Gesucht: ein Fluss $f$, dessen Wert $\lvert f \rvert$ maximal für dieses Flussn
 
 \section{weitere Theorie}
 \subsection{Restnetzwerke}
-
-\begin{frame}
-\frametitle{Restnetzwerke}
-\textit{
-\begin{itemize}
-\item Erklärung: RN sind keine FN, aber Fluss trotzdem analog
-\item Erhöhung $f\uparrow f'$
-\end{itemize}
-}
-\end{frame}
-
 \begin{frame}
 \frametitle{Restnetzwerke}
 \begin{itemize}
@@ -398,7 +388,7 @@ f(v,u) & \text{falls $(v,u) \in E$}\\
 \item Flussnetzwerk $G=(V,E)$ mit Fluss $f$
 \item Restnetzwerk $G_f$ mit Fluss $f'$
 \end{itemize}
-\vspace{15mm}
+\vspace{0.05\textheight}
 \begin{align*}
 (f \uparrow f')(u,v)&=
 \begin{cases}
@@ -407,6 +397,7 @@ f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
 \end{cases}\\
 \lvert f\uparrow f' \rvert &= \lvert f \rvert + \lvert f'\rvert
 \end{align*}
+\vspace{0.05\textheight}
 Beweis über Umformen der aufgelösten Summen.
 \end{frame}
 
@@ -433,6 +424,167 @@ Beweis über Umformen der aufgelösten Summen.
 \item Verbesserungen (Edmonds-Karp-Algorithmus)
 \end{itemize}
 }
+\end{frame}
+
+\begin{frame}
+\frametitle{\ff-Basisalgorithmus}
+%\begin{internallinenumbers}
+%TODO
+%\end{internallinenumbers}
+\end{frame}
+
+\begin{frame}
+\frametitle{\ff-Basisalgorithmus}
+\begin{itemize}
+\item maximaler Fluss wegen maxflow-mincut-Theorem \begin{itemize}
+\item u.A.: $\lvert f\rvert$ ist maximal $\Leftrightarrow$ kein Erweiterungspfad in $G_{f}$
+\end{itemize}
+\item Terminiert stets bei Kantengewichten aus $\mathbb{N}$
+\item $\mathcal{O}(\lvert f_{max}\rvert(V + E))$ für einen maximalen Fluss $f_{max}$
+\item Problem: schlechte Wegewahl möglich
+\end{itemize}
+\note{Tricks mit Datenstruktur -> ohne V in Komplexität}
+\note{Terminierung bzw. Konvergenz bei reellen Zahlen nicht sichergestellt}
+\note{bei rationalen Zahlen Multiplikation mit Hauptnenner}
+\end{frame}
+
+\begin{frame}
+\frametitle{schlechte Wegewahl}
+\begin{figure}[T]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=100](s)(1)
+\Edge[Direct, label=100](s)(2)
+\Edge[Direct, label=1](1)(2)
+\Edge[Direct, label=100](1)(t)
+\Edge[Direct, label=100](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{$G$ mit $f$}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=100, color=red](s)(1)
+\Edge[Direct, label=100](s)(2)
+\Edge[Direct, label=1, color=red](1)(2)
+\Edge[Direct, label=100](1)(t)
+\Edge[Direct, label=100, color=red](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{$G_f$}
+\end{subfigure}
+\caption{gewählter Erweiterungspfad in rot}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{schlechte Wegewahl}
+\begin{figure}[T]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=1/100](s)(1)
+\Edge[Direct, label=100](s)(2)
+\Edge[Direct, label=1/1](1)(2)
+\Edge[Direct, label=100](1)(t)
+\Edge[Direct, label=1/100](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{$G$ mit $f$}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=99, bend=15](s)(1)
+\Edge[Direct, label=1, bend=15](1)(s)
+\Edge[Direct, label=100, color=red](s)(2)
+\Edge[Direct, label=1, color=red](2)(1)
+\Edge[Direct, label=100, color=red](1)(t)
+\Edge[Direct, label=99, bend=15](2)(t)
+\Edge[Direct, label=1, bend=15](t)(2)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{$G_f$}
+\end{subfigure}
+\caption{gewählter Erweiterungspfad in rot}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{schlechte Wegewahl}
+\begin{figure}[T]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=1/100](s)(1)
+\Edge[Direct, label=1/100](s)(2)
+\Edge[Direct, label=1](1)(2)
+\Edge[Direct, label=1/100](1)(t)
+\Edge[Direct, label=1/100](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{$G$ mit $f$}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=99, bend=15, color=red](s)(1)
+\Edge[Direct, label=1, bend=15](1)(s)
+\Edge[Direct, label=99, bend=15](s)(2)
+\Edge[Direct, label=1, bend=15](2)(s)
+\Edge[Direct, label=1, color=red](1)(2)
+\Edge[Direct, label=99, bend=15](1)(t)
+\Edge[Direct, label=1, bend=15](t)(1)
+\Edge[Direct, label=99, bend=15, color=red](2)(t)
+\Edge[Direct, label=1, bend=15](t)(2)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{$G_f$}
+\end{subfigure}
+\caption{gewählter Erweiterungspfad in rot}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Edmonds-Karp-Algorithmus}
+\begin{itemize}
+\item Wahl des Erweiterungspfades als ein kürzester Pfad
+\item $\mathcal{O}(V\cdot E^2)$
+\end{itemize}
+\note{kürzester Pfad meint Anzahl an Kanten}
+\note{Breitensuche}
 \end{frame}
 
 \subsection{Push-Relabel}
