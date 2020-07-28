@@ -7,12 +7,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage[german]{babel}
 \usepackage[T1]{fontenc}
+\usepackage{mathtools}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
 %theming
-\usetheme{Dresden}
+%\usetheme{Montpellier}
 %\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}
 
 %GRAPHING
@@ -29,7 +30,7 @@
 \date{\today}
 
 %ALIAS
-\newcommand{\ff}{\textsc{Ford-Fulkerson}}
+\newcommand{\ff}{Ford-Fulkerson}
 \newcommand{\pr}{Push/Relabel}
 
 \begin{document}
@@ -207,16 +208,6 @@
 \subsection{Fluss}
 \begin{frame}
 \frametitle{Fluss in Flussnetzwerken}
-\textit{
-\begin{itemize}
-\item Grafik: Flussnetzwerk mit Fluss
-\item Notation einführen
-\end{itemize}
-}
-\end{frame}
-
-\begin{frame}
-\frametitle{Fluss in Flussnetzwerken}
 \begin{itemize}
 \item Fluss $f: V \times V \to \mathbb{N}$
 \item erfüllt drei Bedingungen:
@@ -312,29 +303,123 @@ Gesucht: ein Fluss $f$, dessen Wert $\lvert f \rvert$ maximal für dieses Flussn
 
 \section{weitere Theorie}
 \subsection{Restnetzwerke}
+
 \begin{frame}
 \frametitle{Restnetzwerke}
 \textit{
 \begin{itemize}
-\item Grafik: Restnetzwerk aus Flussnetzwerk und Fluss
 \item Erklärung: RN sind keine FN, aber Fluss trotzdem analog
 \item Erhöhung $f\uparrow f'$
 \end{itemize}
 }
 \end{frame}
 
+\begin{frame}
+\frametitle{Restnetzwerke}
+\begin{itemize}
+\item Fluss $f$ in Flussnetzwerk $G=(V,E)$ induziert Restnetzwerk $G_{f}=(V,E_{f})$
+\item mit $E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}$
+\item wobei für $u,v \in V$ gilt: 
+\end{itemize}
+\begin{equation}
+c_{f}(u,v) = 
+\begin{cases}
+c(u,v) - f(u,v) & \text{falls $(u,v)\in E$}\\
+f(v,u) & \text{falls $(v,u) \in E$}\\
+0 & \text{sonst}
+\end{cases}
+\nonumber
+\end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Restnetzwerke}
+\begin{figure}[T]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$, x=1]{s}
+\Vertex[label=$v_1$, x=2.25, y=1]{1}
+\Vertex[label=$v_2$, x=2.25, y=-1]{2}
+\Vertex[label=$v_3$, x=3.75, y=1]{3}
+\Vertex[label=$v_4$, x=3.75, y=-1]{4}
+\Vertex[label=$t$, x=5, y=0]{t}
+\Edge[Direct, label=1/4](s)(1)
+\Edge[Direct, label=2/7](s)(2)
+\Edge[Direct, label=1/2](1)(3)
+\Edge[Direct, label=4](2)(3)
+\Edge[Direct, label=2/3](2)(4)
+\Edge[Direct, label=1/6](3)(t)
+\Edge[Direct, label=2/2](4)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Fluss $f$ in einem Flussnetzwerk $G = (V,E)$}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$, x=1]{s}
+\Vertex[label=$v_1$, x=2.25, y=1]{1}
+\Vertex[label=$v_2$, x=2.25, y=-1]{2}
+\Vertex[label=$v_3$, x=3.75, y=1]{3}
+\Vertex[label=$v_4$, x=3.75, y=-1]{4}
+\Vertex[label=$t$, x=5, y=0]{t}
+\Edge[Direct, label=3, bend=15](s)(1)
+\Edge[Direct, label=1, bend=15](1)(s)
+\Edge[Direct, label=5, bend=15](s)(2)
+\Edge[Direct, label=2, bend=15](2)(s)
+\Edge[Direct, label=1, bend=15](1)(3)
+\Edge[Direct, label=1, bend=15](3)(1)
+\Edge[Direct, label=4](2)(3)
+\Edge[Direct, label=1, bend=15](2)(4)
+\Edge[Direct, label=2, bend=15](4)(2)
+\Edge[Direct, label=5, bend=15](3)(t)
+\Edge[Direct, label=1, bend=15](t)(3)
+\Edge[Direct, label=2](t)(4)
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Restnetzwerk $G_f = (V,E_f)$}
+\end{subfigure}
+\end{figure}
+\note{Kanten in ursprünglicher Flussrichtung: wie viel mehr Fluss noch zulässig}
+\note{Kanten entgegen Flussrichtung: wie viel Fluss kann zurückgeschickt werden}
+\note{Kanten mit Restkapazität 0 nicht eingezeichnet}
+\begin{itemize}
+\item Definition eines Flusses $f'$ im Restnetzwerk analog zu Fluss in Flussnetzwerken.
+\note{}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Erhöhung eines Flusses}
+\begin{itemize}
+\item Flussnetzwerk $G=(V,E)$ mit Fluss $f$
+\item Restnetzwerk $G_f$ mit Fluss $f'$
+\end{itemize}
+\vspace{15mm}
+\begin{align*}
+(f \uparrow f')(u,v)&=
+\begin{cases}
+f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
+0 & \text{sonst}
+\end{cases}\\
+\lvert f\uparrow f' \rvert &= \lvert f \rvert + \lvert f'\rvert
+\end{align*}
+Beweis über Umformen der aufgelösten Summen.
+\end{frame}
+
 \subsection{Erweiterungspfade}
 \begin{frame}
 \frametitle{Erweiterungspfade}
-\textit{
 \begin{itemize}
-\item Grafik: Erweiterungspfad in $G_{f}$
-\item Erklärung: $f_{p}$ und $\lvert f\uparrow f_{p} \rvert > \lvert f\rvert$
-\item Überleitung zu \ff
+\item Pfad $p$ im Restnetzwerk $G_f$ von $s$ nach $t$
+\item Pfadkapazität $c_p = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}$
+\item Definiere Fluss $f_p$ entlang von $p$ mit $f_p(u,v) = \begin{cases}c_p & \text{falls $(u,v)\in p$}\\0 & \text{sonst}\end{cases}$
+\item dann: $\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert$
 \end{itemize}
-}
 \end{frame}
-
 
 \section{Algorithmen}
 \subsection{Ford-Fulkerson}
