@@ -219,7 +219,19 @@
 
 \begin{frame}
 \frametitle{Fluss in Flussnetzwerken}
-\
+\begin{itemize}
+\item Fluss $f: V \times V \to \mathbb{R}$
+\item erfüllt drei Bedingungen:
+\begin{equation}
+\forall u,v\in V\colon (u,v)\notin E\Rightarrow f(u,v) = 0
+\end{equation}
+\begin{equation}
+\forall u,v\in V\colon 0\leq f(u,v)\leq c(u,v)
+\end{equation}
+\begin{equation}
+\forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v)
+\end{equation}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
