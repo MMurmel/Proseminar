@@ -42,7 +42,8 @@
 \begin{frame}
 \frametitle{Gliederung}
 \tableofcontents
-\citep{Cormen09}
+\note{Beweise nicht ausgeführt, nur Beweisideen}
+alle Codesnippets und Definitionen aus \citep{Cormen09}
 \end{frame}
 
 \section{Motivation}
@@ -56,7 +57,7 @@
 \item Beispiel Rechnernetze: Maximale Anzahl der gleichzeitig transportierten Pakete von A nach B?
 \end{itemize}
 \note{!= Kapazitätsproblem}
-\note{Alle Definitionen etc. aus \citep{Co3rmen09}}
+\note{Alle Definitionen etc. aus \citep{Cormen09}}
 \end{column}
 \begin{column}{.6\textwidth}
 \begin{tikzpicture}
@@ -94,7 +95,7 @@
 \item Pfade für alle Knoten\\$\forall v \in V:s \to v \to t$
 \item Keine reflexiven Kanten\\$\forall v \in V: (v,v)\not\in E$
 \end{itemize}
-\note{•}
+\note{reflexive Kanten verboten: Beispiel Spannung beim Stromfluss}
 \end{column}
 \begin{column}{.6\textwidth}
 \begin{adjustbox}{width=\textwidth}
@@ -114,13 +115,13 @@
 \Edge[Direct, label=2](4)(t)
 \end{tikzpicture}
 \end{adjustbox}
-\note{•}
 \end{column}
 \end{columns}
 \end{frame}
 
 \begin{frame}
 \frametitle{unzulässige Spezialfälle}
+\note{aus algorithmischen Gründen (Restnetzwerke)}
 \begin{figure}
 \begin{adjustbox}{width=0.45\linewidth}
 \begin{tikzpicture}
@@ -160,6 +161,7 @@
 
 \begin{frame}
 \frametitle{unzulässige Spezialfälle}
+\note{nicht schwerer als mit einer Quelle/Senke}
 \begin{figure}
 \begin{adjustbox}{width=0.45\linewidth}
 \begin{tikzpicture}
@@ -221,6 +223,7 @@
 \begin{equation}
 \forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v)
 \end{equation}
+\note{Flusserhaltung, entspricht Kirchhoffscher Knotenregel}
 \end{itemize}
 \end{frame}
 
@@ -230,9 +233,8 @@
 \begin{column}{.4\textwidth}
 \begin{itemize}
 \item $f(u,v)/c(u,v)$
-\item bei $f(u,v) = 0$ wird nur $c(u,v)$ angegeben
+\note{bei $f(u,v) = 0$ wird nur $c(u,v)$ angegeben}
 \end{itemize}
-\note{•}
 \end{column}
 \begin{column}{.55\textwidth}
 \begin{adjustbox}{width=\textwidth}
@@ -252,7 +254,6 @@
 \Edge[Direct, label=2/2](4)(t)
 \end{tikzpicture}
 \end{adjustbox}
-\note{•}
 \end{column}
 \end{columns}
 \end{frame}
@@ -266,6 +267,8 @@ Wert $\lvert f \rvert$ eines Flusses $f$:
 \lvert f \rvert = \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s) \nonumber
 \end{equation}
 \note{Meist nur linker Term.}
+\note{"Netto"}
+\note{wegen Flusserhaltung gleich zu eingehendem Fluss in Senke}
 \end{column}
 \hfill
 \pause
@@ -320,6 +323,8 @@ f(v,u) & \text{falls $(v,u) \in E$}\\
 \end{cases}
 \nonumber
 \end{equation}
+\note{antiparallele Kanten möglich -> kein Flussnetzwerk}
+\note{Überleitung Beispiele}
 \end{frame}
 
 \begin{frame}
@@ -378,7 +383,6 @@ f(v,u) & \text{falls $(v,u) \in E$}\\
 \note{Kanten mit Restkapazität 0 nicht eingezeichnet}
 \begin{itemize}
 \item Definition eines Flusses $f'$ im Restnetzwerk analog zu Fluss in Flussnetzwerken.
-\note{}
 \end{itemize}
 \end{frame}
 
@@ -397,8 +401,10 @@ f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
 \end{cases}\\
 \lvert f\uparrow f' \rvert &= \lvert f \rvert + \lvert f'\rvert
 \end{align*}
+\note{$f \uparrow f'$ erklären}
 \vspace{0.05\textheight}
-Beweis über Umformen der aufgelösten Summen.
+Beweis über Umformen der Summen.
+\note{Jetzt noch zu tun: finden eines Flusses in Gf -> Erweiterungspfade}
 \end{frame}
 
 \subsection{Erweiterungspfade}
@@ -406,46 +412,35 @@ Beweis über Umformen der aufgelösten Summen.
 \frametitle{Erweiterungspfade}
 \begin{itemize}
 \item Pfad $p$ im Restnetzwerk $G_f$ von $s$ nach $t$
-\item Pfadkapazität $c_p = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}$
-\item Definiere Fluss $f_p$ entlang von $p$ mit $f_p(u,v) = \begin{cases}c_p & \text{falls $(u,v)\in p$}\\0 & \text{sonst}\end{cases}$
+\item Pfadkapazität $c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}$
+\item Definiere Fluss $f_p$ entlang von $p$ mit $f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}$
 \item dann: $\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert$
 \end{itemize}
+\note{alles zusammen für \ff-Algorithmus}
 \end{frame}
 
 \section{Algorithmen}
 \subsection{Ford-Fulkerson}
 \begin{frame}
-\frametitle{\ff}
-\textit{
-\begin{itemize}
-\item Erklärung Algorithmus mit Vorwissen aus RN und Erweiterungspfade
-\item maximal? -> ja, wegen maxflow-mincut-Theorem (Erklärung reduzieren auf $\lvert f\rvert$ max. $\Leftrightarrow$ kein Pfad in $G_{f}$)
-\item Terminierung
-\item Verbesserungen (Edmonds-Karp-Algorithmus)
-\end{itemize}
-}
-\end{frame}
-
-\begin{frame}
 \frametitle{\ff-Basisalgorithmus}
-%\begin{internallinenumbers}
-%TODO
-%\end{internallinenumbers}
+\begin{adjustbox}{width = \textwidth}
+\includegraphics{../Grafiken/FF-Basis.png}
+\end{adjustbox}
+\note{Jack Edmonds und Richard Karp, 1970}
 \end{frame}
 
 \begin{frame}
 \frametitle{\ff-Basisalgorithmus}
 \begin{itemize}
-\item maximaler Fluss wegen maxflow-mincut-Theorem \begin{itemize}
+\item Fluss ist maximal wegen maxflow-mincut-Theorem \begin{itemize}
 \item u.A.: $\lvert f\rvert$ ist maximal $\Leftrightarrow$ kein Erweiterungspfad in $G_{f}$
 \end{itemize}
 \item Terminiert stets bei Kantengewichten aus $\mathbb{N}$
-\item $\mathcal{O}(\lvert f_{max}\rvert(V + E))$ für einen maximalen Fluss $f_{max}$
+\item $\mathcal{O}(\lvert f_{max}\rvert \cdot E)$ für einen maximalen Fluss $f_{max}$
 \item Problem: schlechte Wegewahl möglich
 \end{itemize}
-\note{Tricks mit Datenstruktur -> ohne V in Komplexität}
-\note{Terminierung bzw. Konvergenz bei reellen Zahlen nicht sichergestellt}
 \note{bei rationalen Zahlen Multiplikation mit Hauptnenner}
+\note{Terminierung bzw. Konvergenz bei reellen Zahlen nicht sichergestellt}
 \end{frame}
 
 \begin{frame}
@@ -589,29 +584,71 @@ Beweis über Umformen der aufgelösten Summen.
 
 \subsection{Push-Relabel}
 \begin{frame}
-\frametitle{\pr}
-\textit{
+\frametitle{\pr -Grundlagen}
 \begin{itemize}
-\item Intuition
-\item Vorfluss -> verletzt ggf. Flusserhaltung
-\item Höhe
-\item Operationen
-\item generischer \pr -Algorithmus
-\item Verbesserungen (Relabel-to-Front)
+\note{lokaler als \ff}
+\note{spezielle Parameter der Knoten}
+\item arbeitet mit Vorfluss: \begin{equation}
+\forall u \in V\setminus\{ s\} :\sum_{v\in V} f(v,u) \geq \sum_{v\in V} f(u,v)
+\nonumber
+\end{equation}
+\item Flussüberschuss $e(u)$ des Knotens $u \in V$: \begin{equation}
+e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
+\nonumber
+\end{equation}
+\note{Knoten ist überflutet bei $e(u) > 0$}
+\item Höhenfunktion $h: V\to \mathbb{N}$ mit $h(s) = \lvert V\rvert, h(t)=0$ und: \begin{equation}
+\forall (u,v) \in E_f:h(u) \leq h(v) + 1
+\nonumber
+\end{equation}
 \end{itemize}
-}
-\end{frame}
-
-\subsection{Vergleich}
-\begin{frame}
-\textit{
-\begin{itemize}
-\item Laufzeiten
-\end{itemize}
-}
 \end{frame}
 
 \begin{frame}
+\frametitle{Push-Operation}
+\begin{adjustbox}{width = \textwidth}
+\includegraphics{../Grafiken/Push.png}
+\end{adjustbox}
+\end{frame}
+
+\begin{frame}
+\frametitle{Relabel-Operation}
+\begin{adjustbox}{width = \textwidth}
+\includegraphics{../Grafiken/Relabel.png}
+\end{adjustbox}
+\end{frame}
+
+\begin{frame}
+\frametitle{generischer \pr -Algorithmus}
+\centering
+\begin{adjustbox}{width = 0.5\textwidth}
+\includegraphics{../Grafiken/Init-Preflow.png}
+\end{adjustbox}
+\begin{adjustbox}{width = \textwidth}
+\includegraphics{../Grafiken/Generic-PR.png}
+\end{adjustbox}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\textit{TODO}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Analyse}
+\begin{itemize}
+\item Vorfluss $f$ ist bei Terminierung ein Fluss.
+\note{Beweis über mehrere Beobachtungen zur Höhenfunktion und eine Schleifeninvariante}
+\note{Terminierung über Abschätzung der benötigten Operationen}
+\item insgesamt $\mathcal{O}(V^2 \cdot E)$
+\item Verbesserung: Relabel-to-Front-Algorithmus
+\note{geschickte Wahl der Datenstruktur und der ausgeführten Operationen}
+\item $\mathcal{O}(V^3)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Literatur}
 \bibliography{../../references}
 \bibliographystyle{ieeetr}
 \end{frame}
