@@ -1,5 +1,10 @@
 \documentclass{beamer}
 
+%META-INFORMATION
+\author{Maximilian Moeller}
+\title{Maximaler Fluss in Flussnetzwerken}
+\date{\today}
+
 %\usepackage{pgfpages}
 %\setbeameroption{show notes on second screen=right}
 
@@ -12,10 +17,6 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
-%theming
-%\usetheme{Montpellier}
-%\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}
-
 %GRAPHING
 \usepackage{tikz-network}
 \usepackage{adjustbox}
@@ -23,11 +24,9 @@
 
 %BIBTEX
 \usepackage[numbers,square]{natbib}
-
-%META-INFORMATION
-\author{Maximilian Moeller}
-\title{Maximaler Fluss in Flussnetzwerken}
-\date{\today}
+\usepackage{url}
+%smaller URLs
+\renewcommand{\UrlFont}{\small\tt}
 
 %ALIAS
 \newcommand{\ff}{Ford-Fulkerson}
@@ -57,7 +56,6 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \item Beispiel Rechnernetze: Maximale Anzahl der gleichzeitig transportierten Pakete von A nach B?
 \end{itemize}
 \note{!= Kapazitätsproblem}
-\note{Alle Definitionen etc. aus \citep{Cormen09}}
 \end{column}
 \begin{column}{.6\textwidth}
 \begin{tikzpicture}
@@ -1189,6 +1187,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
+\nocite{PR-Visual}
 \note{keine Operationen mehr möglich -> f ist maximaler Fluss}
 \note{Operationen im Beispiel bereits in günstiger Reihenfolge gewählt -> Verbesserungen}
 \end{frame}
