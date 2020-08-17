@@ -631,7 +631,566 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 
 \begin{frame}
 \frametitle{\pr -Beispiel}
-\textit{TODO}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3](s)(1)
+\Edge[Direct, label=4](s)(2)
+\Edge[Direct, label=3](1)(2)
+\Edge[Direct, label=1](1)(t)
+\Edge[Direct, label=5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+
+\Vertex[label=$s$, x=1, y=0]{s}
+\Vertex[label=$v_1$, x=2, y=0]{1}
+\Vertex[label=$v_2$, x=3, y=0]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large 0};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{Knotenhöhen und -überschüsse bereits initialisiert}
+\note{Diagramm rechts erläutern: Knoten, Höhen und Überschüsse}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=3](1)(2)
+\Edge[Direct, label=1](1)(t)
+\Edge[Direct, label=5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=0, color=lime]{1}
+\Vertex[label=$v_2$, x=3, y=0]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 3};
+\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{"initialize preflow" abgeschlossen}
+\note{in anderer Farbe der für die nächste Operation betrachtete Knoten (push nicht anwendbar, aber relabel -> auf t.h+1= v2.h+1 setzen)}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=3](1)(2)
+\Edge[Direct, label=1, color=lime](1)(t)
+\Edge[Direct, label=5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=3, y=0]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 3};
+\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{Fluss kann von v1 nach t (oder v2) gepusht werden.}
+\note{pushe das Minimum von Kapazität der Restkante und Überschuss}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=3, color=lime](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=3, y=0]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 2};
+\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+\draw (4,5.5) node[anchor=south, text=red] {\large 1};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{weitere push-Operation verfügbar}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1, color=lime]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=2/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=3, y=0, color=lime]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 6};
+\draw (4,5.5) node[anchor=south, text=red] {\large 1};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{relabel v2 auf t.h + 1}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1, color=lime]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=2/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5, color=lime](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=3, y=1, color=lime]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 6};
+\draw (4,5.5) node[anchor=south, text=red] {\large 1};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{push 5}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1, color=lime]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=2/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=3, y=1, color=lime]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 1};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{relabel v2}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1, color=lime]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=2/3, color=lime](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=3, y=2, color=lime]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 1};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{push 1 to v1 (Kapazitäten des Restnetzwerks!)}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=1/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=3, y=2]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 1};
+\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{"Hochschaukeln" -> Zusammenfassen von Relabel v1 und push 1 to v2}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1, color=lime]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=2/3, color=lime](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=3]{1}
+\Vertex[label=$v_2$, x=3, y=2, color=lime]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 1};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{push 1 to v1 (Kapazitäten des Restnetzwerks!)}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=1/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=3, color=lime]{1}
+\Vertex[label=$v_2$, x=3, y=4]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 1};
+\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1, color=lime]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=3/3, color=lime](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=1/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=5, color=lime]{1}
+\Vertex[label=$v_2$, x=3, y=4]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+\draw (2,5.5) node[anchor=south, text=red] {\large 1};
+\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{durch Erhöhung über $\lvert V\rvert$ wieder pushen in Quelle möglich}
+\end{frame}
+
+\begin{frame}
+\frametitle{\pr -Beispiel}
+\begin{figure}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=1]{1}
+\Vertex[label=$v_2$, x=2, y=-1]{2}
+\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=2/3](s)(1)
+\Edge[Direct, label=4/4](s)(2)
+\Edge[Direct, label=1/3](1)(2)
+\Edge[Direct, label=1/1](1)(t)
+\Edge[Direct, label=5/5](2)(t)
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+\draw (5,0) node[anchor=north west] {$u \in V$};
+\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+\foreach \y in {0,1,2,3,4}
+    \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+\Vertex[label=$s$, x=1, y=4]{s}
+\Vertex[label=$v_1$, x=2, y=5]{1}
+\Vertex[label=$v_2$, x=3, y=4]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+\draw (1,5.5) node[anchor=south, text=red] {\large -6};
+\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+\end{tikzpicture}
+\end{adjustbox}
+\end{subfigure}
+\end{figure}
+\note{keine Operationen mehr möglich -> f ist maximaler Fluss}
+\note{Operationen im Beispiel bereits in günstiger Reihenfolge gewählt -> Verbesserungen}
 \end{frame}
 
 \begin{frame}
