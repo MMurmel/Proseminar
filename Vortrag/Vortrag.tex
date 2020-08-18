@@ -6,7 +6,7 @@
 \date{\today}
 
 %\usepackage{pgfpages}
-%\setbeameroption{show notes on second screen=right}
+%\setbeameroption{show notes}
 
 %DEFAULT
 \usepackage[utf8]{inputenc}
@@ -41,7 +41,7 @@
 \begin{frame}
 \frametitle{Gliederung}
 \tableofcontents
-\note{Beweise nicht ausgeführt, nur Beweisideen}
+\note[item]{Beweise nicht ausgeführt, nur Beweisideen}
 alle Codesnippets und Definitionen aus \citep{Cormen09}
 \end{frame}
 
@@ -55,7 +55,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \item Pfade durch Kapazitäten beschränkt\pause
 \item Beispiel Rechnernetze: Maximale Anzahl der gleichzeitig transportierten Pakete von A nach B?
 \end{itemize}
-\note{!= Kapazitätsproblem}
+\note[item]{!= Kapazitätsproblem}
 \end{column}
 \begin{column}{.6\textwidth}
 \begin{tikzpicture}
@@ -73,8 +73,8 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \Edge[Direct, label=6](3)(t)
 \Edge[Direct, label=2](4)(t)
 \end{tikzpicture}
-\note{Kapazitäten = Bandbreite d. Kanals}
-\note{maximal 8 Pakete}
+\note[item]{Kapazitäten = Bandbreite d. Kanals}
+\note[item]{maximal 8 Pakete}
 \end{column}
 \end{columns}
 \end{frame}
@@ -93,7 +93,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \item Pfade für alle Knoten\\$\forall v \in V:s \to v \to t$
 \item Keine reflexiven Kanten\\$\forall v \in V: (v,v)\not\in E$
 \end{itemize}
-\note{reflexive Kanten verboten: Beispiel Spannung beim Stromfluss}
+\note[item]{reflexive Kanten verboten: Beispiel Spannung beim Stromfluss}
 \end{column}
 \begin{column}{.6\textwidth}
 \begin{adjustbox}{width=\textwidth}
@@ -119,7 +119,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 
 \begin{frame}
 \frametitle{unzulässige Spezialfälle}
-\note{aus algorithmischen Gründen (Restnetzwerke)}
+\note[item]{aus algorithmischen Gründen (Restnetzwerke)}
 \begin{figure}
 \begin{adjustbox}{width=0.45\linewidth}
 \begin{tikzpicture}
@@ -159,7 +159,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 
 \begin{frame}
 \frametitle{unzulässige Spezialfälle}
-\note{nicht schwerer als mit einer Quelle/Senke}
+\note[item]{nicht schwerer als mit einer Quelle/Senke}
 \begin{figure}
 \begin{adjustbox}{width=0.45\linewidth}
 \begin{tikzpicture}
@@ -221,7 +221,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \begin{equation}
 \forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v)
 \end{equation}
-\note{Flusserhaltung, entspricht Kirchhoffscher Knotenregel}
+\note[item]{Flusserhaltung, entspricht Kirchhoffscher Knotenregel}
 \end{itemize}
 \end{frame}
 
@@ -231,7 +231,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \begin{column}{.4\textwidth}
 \begin{itemize}
 \item $f(u,v)/c(u,v)$
-\note{bei $f(u,v) = 0$ wird nur $c(u,v)$ angegeben}
+\note[item]{bei $f(u,v) = 0$ wird nur $c(u,v)$ angegeben}
 \end{itemize}
 \end{column}
 \begin{column}{.55\textwidth}
@@ -264,9 +264,9 @@ Wert $\lvert f \rvert$ eines Flusses $f$:
 \begin{equation}
 \lvert f \rvert = \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s) \nonumber
 \end{equation}
-\note{Meist nur linker Term.}
-\note{"Netto"}
-\note{wegen Flusserhaltung gleich zu eingehendem Fluss in Senke}
+\note[item]{Meist nur linker Term.}
+\note[item]{"Netto"}
+\note[item]{wegen Flusserhaltung gleich zu eingehendem Fluss in Senke}
 \end{column}
 \hfill
 \pause
@@ -321,8 +321,8 @@ f(v,u) & \text{falls $(v,u) \in E$}\\
 \end{cases}
 \nonumber
 \end{equation}
-\note{antiparallele Kanten möglich -> kein Flussnetzwerk}
-\note{Überleitung Beispiele}
+\note[item]{antiparallele Kanten möglich -> kein Flussnetzwerk}
+\note[item]{Überleitung Beispiele}
 \end{frame}
 
 \begin{frame}
@@ -376,9 +376,9 @@ f(v,u) & \text{falls $(v,u) \in E$}\\
 \caption{Restnetzwerk $G_f = (V,E_f)$}
 \end{subfigure}
 \end{figure}
-\note{Kanten in ursprünglicher Flussrichtung: wie viel mehr Fluss noch zulässig}
-\note{Kanten entgegen Flussrichtung: wie viel Fluss kann zurückgeschickt werden}
-\note{Kanten mit Restkapazität 0 nicht eingezeichnet}
+\note[item]{Kanten in ursprünglicher Flussrichtung: wie viel mehr Fluss noch zulässig}
+\note[item]{Kanten entgegen Flussrichtung: wie viel Fluss kann zurückgeschickt werden}
+\note[item]{Kanten mit Restkapazität 0 nicht eingezeichnet}
 \begin{itemize}
 \item Definition eines Flusses $f'$ im Restnetzwerk analog zu Fluss in Flussnetzwerken.
 \end{itemize}
@@ -399,10 +399,10 @@ f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
 \end{cases}\\
 \lvert f\uparrow f' \rvert &= \lvert f \rvert + \lvert f'\rvert
 \end{align*}
-\note{$f \uparrow f'$ erklären}
+\note[item]{$f \uparrow f'$ erklären}
 \vspace{0.05\textheight}
 Beweis über Umformen der Summen.
-\note{Jetzt noch zu tun: finden eines Flusses in Gf -> Erweiterungspfade}
+\note[item]{Jetzt noch zu tun: finden eines Flusses in Gf -> Erweiterungspfade}
 \end{frame}
 
 \subsection{Erweiterungspfade}
@@ -414,7 +414,7 @@ Beweis über Umformen der Summen.
 \item Definiere Fluss $f_p$ entlang von $p$ mit $f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}$
 \item dann: $\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert$
 \end{itemize}
-\note{alles zusammen für \ff-Algorithmus}
+\note[item]{alles zusammen für \ff-Algorithmus}
 \end{frame}
 
 \section{Algorithmen}
@@ -424,7 +424,7 @@ Beweis über Umformen der Summen.
 \begin{adjustbox}{width = \textwidth}
 \includegraphics{../Grafiken/FF-Basis.png}
 \end{adjustbox}
-\note{Jack Edmonds und Richard Karp, 1970}
+\note[item]{Jack Edmonds und Richard Karp, 1970}
 \end{frame}
 
 \begin{frame}
@@ -437,8 +437,8 @@ Beweis über Umformen der Summen.
 \item $\mathcal{O}(\lvert f_{max}\rvert \cdot E)$ für einen maximalen Fluss $f_{max}$
 \item Problem: schlechte Wegewahl möglich
 \end{itemize}
-\note{bei rationalen Zahlen Multiplikation mit Hauptnenner}
-\note{Terminierung bzw. Konvergenz bei reellen Zahlen nicht sichergestellt}
+\note[item]{bei rationalen Zahlen Multiplikation mit Hauptnenner}
+\note[item]{Terminierung bzw. Konvergenz bei reellen Zahlen nicht sichergestellt}
 \end{frame}
 
 \begin{frame}
@@ -576,16 +576,16 @@ Beweis über Umformen der Summen.
 \item Wahl des Erweiterungspfades als ein kürzester Pfad
 \item $\mathcal{O}(V\cdot E^2)$
 \end{itemize}
-\note{kürzester Pfad meint Anzahl an Kanten}
-\note{Breitensuche}
+\note[item]{kürzester Pfad meint Anzahl an Kanten}
+\note[item]{Breitensuche}
 \end{frame}
 
 \subsection{Push-Relabel}
 \begin{frame}
 \frametitle{\pr -Grundlagen}
 \begin{itemize}
-\note{lokaler als \ff}
-\note{spezielle Parameter der Knoten}
+\note[item]{lokaler als \ff}
+\note[item]{spezielle Parameter der Knoten}
 \item arbeitet mit Vorfluss: \begin{equation}
 \forall u \in V\setminus\{ s\} :\sum_{v\in V} f(v,u) \geq \sum_{v\in V} f(u,v)
 \nonumber
@@ -594,7 +594,7 @@ Beweis über Umformen der Summen.
 e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \nonumber
 \end{equation}
-\note{Knoten ist überflutet bei $e(u) > 0$}
+\note[item]{Knoten ist überflutet bei $e(u) > 0$}
 \item Höhenfunktion $h: V\to \mathbb{N}$ mit $h(s) = \lvert V\rvert, h(t)=0$ und: \begin{equation}
 \forall (u,v) \in E_f:h(u) \leq h(v) + 1
 \nonumber
@@ -669,8 +669,8 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{Knotenhöhen und -überschüsse bereits initialisiert}
-\note{Diagramm rechts erläutern: Knoten, Höhen und Überschüsse}
+\note[item]{Knotenhöhen und -überschüsse bereits initialisiert}
+\note[item]{Diagramm rechts erläutern: Knoten, Höhen und Überschüsse}
 \end{frame}
 
 \begin{frame}
@@ -713,8 +713,8 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{"initialize preflow" abgeschlossen}
-\note{in anderer Farbe der für die nächste Operation betrachtete Knoten (push nicht anwendbar, aber relabel -> auf t.h+1= v2.h+1 setzen)}
+\note[item]{initialize preflow abgeschlossen}
+\note[item]{in anderer Farbe der für die nächste Operation betrachtete Knoten (push nicht anwendbar, aber relabel -> auf t.h+1= v2.h+1 setzen)}
 \end{frame}
 
 \begin{frame}
@@ -757,8 +757,8 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{Fluss kann von v1 nach t (oder v2) gepusht werden.}
-\note{pushe das Minimum von Kapazität der Restkante und Überschuss}
+\note[item]{Fluss kann von v1 nach t (oder v2) gepusht werden.}
+\note[item]{pushe das Minimum von Kapazität der Restkante und Überschuss}
 \end{frame}
 
 \begin{frame}
@@ -801,7 +801,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{weitere push-Operation verfügbar}
+\note[item]{weitere push-Operation verfügbar}
 \end{frame}
 
 \begin{frame}
@@ -844,7 +844,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{relabel v2 auf t.h + 1}
+\note[item]{relabel v2 auf t.h + 1}
 \end{frame}
 
 \begin{frame}
@@ -887,7 +887,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{push 5}
+\note[item]{push 5}
 \end{frame}
 
 \begin{frame}
@@ -930,7 +930,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{relabel v2}
+\note[item]{relabel v2}
 \end{frame}
 
 \begin{frame}
@@ -973,7 +973,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{push 1 to v1 (Kapazitäten des Restnetzwerks!)}
+\note[item]{push 1 to v1 (Kapazitäten des Restnetzwerks!)}
 \end{frame}
 
 \begin{frame}
@@ -1016,7 +1016,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{"Hochschaukeln" -> Zusammenfassen von Relabel v1 und push 1 to v2}
+\note[item]{"Hochschaukeln" -> Zusammenfassen von Relabel v1 und push 1 to v2}
 \end{frame}
 
 \begin{frame}
@@ -1059,7 +1059,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{push 1 to v1 (Kapazitäten des Restnetzwerks!)}
+\note[item]{push 1 to v1 (Kapazitäten des Restnetzwerks!)}
 \end{frame}
 
 \begin{frame}
@@ -1144,7 +1144,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{subfigure}
 \end{figure}
-\note{durch Erhöhung über $\lvert V\rvert$ wieder pushen in Quelle möglich}
+\note[item]{durch Erhöhung über $\lvert V\rvert$ wieder pushen in Quelle möglich}
 \end{frame}
 
 \begin{frame}
@@ -1188,19 +1188,19 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{subfigure}
 \end{figure}
 \nocite{PR-Visual}
-\note{keine Operationen mehr möglich -> f ist maximaler Fluss}
-\note{Operationen im Beispiel bereits in günstiger Reihenfolge gewählt -> Verbesserungen}
+\note[item]{keine Operationen mehr möglich -> f ist maximaler Fluss}
+\note[item]{Operationen im Beispiel bereits in günstiger Reihenfolge gewählt -> Verbesserungen}
 \end{frame}
 
 \begin{frame}
 \frametitle{\pr -Analyse}
 \begin{itemize}
 \item Vorfluss $f$ ist bei Terminierung ein Fluss.
-\note{Beweis über mehrere Beobachtungen zur Höhenfunktion und eine Schleifeninvariante}
-\note{Terminierung über Abschätzung der benötigten Operationen}
+\note[item]{Beweis über mehrere Beobachtungen zur Höhenfunktion und eine Schleifeninvariante}
+\note[item]{Terminierung über Abschätzung der benötigten Operationen}
 \item insgesamt $\mathcal{O}(V^2 \cdot E)$
 \item Verbesserung: Relabel-to-Front-Algorithmus
-\note{geschickte Wahl der Datenstruktur und der ausgeführten Operationen}
+\note[item]{geschickte Wahl der Datenstruktur und der ausgeführten Operationen}
 \item $\mathcal{O}(V^3)$
 \end{itemize}
 \end{frame}
