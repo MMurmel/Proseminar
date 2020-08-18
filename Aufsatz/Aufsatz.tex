@@ -1,0 +1,44 @@
+\documentclass[12pt,a4paper,titlepage,onecolumn,ngerman,draft]{scrartcl}
+
+%META-INFORMATION
+\author{Maximilian Moeller}
+\title{Maximaler Fluss in Flussnetzwerken}
+\subtitle{Proseminar Theoretische Informatik 2020}
+\date{\today}
+
+%DEFAULT
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+%GRAPHING
+\usepackage{tikz-network}
+\usepackage{adjustbox}
+\usepackage{subcaption}
+
+%BIBTEX
+\usepackage[numbers,square]{natbib}
+\usepackage{url}
+%smaller URLs
+\renewcommand{\UrlFont}{\small\tt}
+
+%ALIAS
+\newcommand{\ff}{Ford-Fulkerson}
+\newcommand{\pr}{Push/Relabel}
+
+\begin{document}
+\maketitle
+\nocite{Cormen09}
+
+\tableofcontents
+
+\begin{abstract}
+\end{abstract}
+ 
+\bibliography{../../references}{}
+\bibliographystyle{ieeetr}
+\end{document}
