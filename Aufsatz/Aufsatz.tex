@@ -38,7 +38,25 @@
 
 \begin{abstract}
 \end{abstract}
- 
+
+\section{Grundlagen}
+In diesem Abschnitt werden die grundlegenen Voraussetzungen geschaffen, um das Problem des maximalen Flusses formulieren zu können.
+
+\subsection{Flussnetzwerk}
+Ein Flussnetzwerk ist ein gerichteter Graph $G = (V,E)$, in dem jeder Kante $(u,v) \in E$ durch eine Kapazitätsfunktion $c: V\times V\to\mathfrak{B}$ eine Kapazität $c(u,v) \geq 0$ zugeordnet ist.
+Dabei ist häufig $\mathfrak{B} = \mathbb{N}$, jedoch ist auch $\mathfrak{B} = \mathbb{Z}$ oder $\mathfrak{B} = \mathbb{R}$ möglich.
+Für $(u,v) \notin E$ sei $c(u,v) = 0$.
+Darüber hinaus fordern wir: 
+\begin{equation} \label{noparallel}
+\forall (u,v)\in V\times V: (u,v)\in E \Rightarrow (v,u)\notin E\\
+\end{equation}
+
+
+\newpage
+\section{\ff}
+Zunächst soll die Klasse der \ff -Algorithmen vorgestellt werden.
+
+\newpage
 \bibliography{../../references}{}
 \bibliographystyle{ieeetr}
 \end{document}
