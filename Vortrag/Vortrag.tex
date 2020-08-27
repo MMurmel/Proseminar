@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[draft]{beamer}
 
 %META-INFORMATION
 \author{Maximilian Moeller}
@@ -133,95 +133,6 @@ Maximaler-Fluss-Problem
 \end{adjustbox}
 \end{column}
 \end{columns}
-\end{frame}
-
-\begin{frame}
-\frametitle{unzulässige Spezialfälle}
-\note[item]{aus algorithmischen Gründen (Restnetzwerke)}
-\begin{figure}
-\begin{adjustbox}{width=0.45\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$]{s}
-\Vertex[label=$v_1$, x=1.5, y=1]{1}
-\Vertex[label=$v_2$, x=1.5, y=-1]{2}
-\Vertex[label=$t$, x=3, y=0]{t}
-\Edge[Direct, label=4](s)(1)
-\Edge[Direct, label=7](s)(2)
-\Edge[Direct, label=2, bend=15](1)(2)
-\Edge[Direct, label=4,bend=15](2)(1)
-\Edge[Direct, label=3](1)(t)
-\Edge[Direct, label=6](2)(t)
-\end{tikzpicture}
-\end{adjustbox}
-\pause
-\hfill
-\begin{adjustbox}{width=0.45\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$]{s}
-\Vertex[label=$v_1$, x=1.5, y=1]{1}
-\Vertex[label=$v_2$, x=1.5, y=-1]{2}
-\Vertex[label=$v_{12}$, x= 2, y=0]{3}
-\Vertex[label=$t$, x=3, y=0]{t}
-\Edge[Direct, label=4](s)(1)
-\Edge[Direct, label=7](s)(2)
-\Edge[Direct, label=2](1)(3)
-\Edge[Direct, label=2](3)(2)
-\Edge[Direct, label=4,bend=15](2)(1)
-\Edge[Direct, label=3](1)(t)
-\Edge[Direct, label=6](2)(t)
-\end{tikzpicture}
-\end{adjustbox}
-\caption{Modellierung von antiparallelen Kanten durch zusätzliche Knoten}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{unzulässige Spezialfälle}
-\note[item]{nicht schwerer als mit einer Quelle/Senke}
-\begin{figure}
-\begin{adjustbox}{width=0.45\linewidth}
-\begin{tikzpicture}
-\Vertex[x=-1, Pseudo]{p1}
-\Vertex[label=$s1$, y=2]{s1}
-\Vertex[label=$s2$, y=0]{s2}
-\Vertex[label=$s3$, y=-2]{s3}
-\Vertex[label=$v$, x=1, y=0]{1}
-\Vertex[label=$t1$, x=2, y=1]{t1}
-\Vertex[label=$t2$, x=2, y=-1]{t2}
-\Vertex[x=3, Pseudo]{p2}
-\Edge[Direct, label=4](s1)(1)
-\Edge[Direct, label=7](s2)(1)
-\Edge[Direct, label=2](s3)(1)
-\Edge[Direct, label=4](1)(t1)
-\Edge[Direct, label=3](1)(t2)
-\end{tikzpicture}
-\end{adjustbox}
-\pause
-\hfill
-\begin{adjustbox}{width=0.45\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$, x=-1]{s}
-\Vertex[label=$s1$, y=2]{s1}
-\Vertex[label=$s2$, y=0]{s2}
-\Vertex[label=$s3$, y=-2]{s3}
-\Vertex[label=$v$, x=1, y=0]{1}
-\Vertex[label=$t1$, x=2, y=1]{t1}
-\Vertex[label=$t2$, x=2, y=-1]{t2}
-\Vertex[label=$t$, x=3]{t}
-\Edge[Direct, label=$\infty$](s)(s1)
-\Edge[Direct, label=$\infty$](s)(s2)
-\Edge[Direct, label=$\infty$](s)(s3)
-\Edge[Direct, label=4](s1)(1)
-\Edge[Direct, label=7](s2)(1)
-\Edge[Direct, label=2](s3)(1)
-\Edge[Direct, label=4](1)(t1)
-\Edge[Direct, label=3](1)(t2)
-\Edge[Direct, label=$\infty$](t1)(t)
-\Edge[Direct, label=$\infty$](t2)(t)
-\end{tikzpicture}
-\end{adjustbox}
-\caption{Modellierung von mehreren Quellen und Senken durch Superquelle und Supersenke}
-\end{figure}
 \end{frame}
 
 \subsection{Fluss}
