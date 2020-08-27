@@ -48,6 +48,7 @@
 alle Codesnippets und Definitionen aus \citep{Cormen09}
 \end{frame}
 
+%TODO
 \section*{Motivation}
 \begin{frame}[plain]
 \begin{center}
@@ -105,11 +106,11 @@ Maximaler-Fluss-Problem
 \begin{columns}
 \begin{column}{.45\textwidth}
 \begin{itemize}
-\item gerichteter Graph $G=(V,E)$
-\item Kapazitäten $c: E \to \mathbb{N}$\\$\forall (u,v)\in E: c(u,v) \geq 0$
-\item Quelle $s$ und Senke $t$
-\item Pfade für alle Knoten\\$\forall v \in V:s \to v \to t$
-\item Keine reflexiven Kanten\\$\forall v \in V: (v,v)\not\in E$
+\item<1-> gerichteter Graph $G=(V,E)$
+\item<2-> Kapazitäten $c(u,v) \geq 0$ für $u,v \in V$ (meist $\mathbb{N}$)
+\item<3-> Quelle $s$ und Senke $t$
+\item<4-> jeder Knoten $v$ liegt auf einem Pfad von $s$ nach $t$
+\item<5-> Keine reflexiven Kanten (gleicher Start- und Zielknoten)
 \end{itemize}
 \note[item]{reflexive Kanten verboten: Beispiel Spannung beim Stromfluss}
 \end{column}
@@ -138,70 +139,71 @@ Maximaler-Fluss-Problem
 \subsection{Fluss}
 \begin{frame}
 \frametitle{Fluss in Flussnetzwerken}
-\begin{itemize}
-\item Fluss $f: V \times V \to \mathbb{N}$
-\item erfüllt drei Bedingungen:
-\begin{equation}
+Fluss $f: V \times V \to \mathbb{N}$ erfüllt drei Bedingungen:
+\vfill
+\onslide<1->{\begin{equation}
 \forall u,v\in V\colon (u,v)\notin E\Rightarrow f(u,v) = 0
-\end{equation}
-\begin{equation}
+\end{equation}}
+\note[item]{Nur wo Rohre liegen kann Wasser fließen}
+\onslide<2->{\begin{equation}
 \forall u,v\in V\colon 0\leq f(u,v)\leq c(u,v)
-\end{equation}
-\begin{equation}
+\end{equation}}
+\note[item]{Fluss hält Kapazitäten ein}
+\onslide<3->{\begin{equation}
 \forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v)
-\end{equation}
+\end{equation}}
 \note[item]{Flusserhaltung, entspricht Kirchhoffscher Knotenregel}
-\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Notation}
-\begin{columns}
-\begin{column}{.4\textwidth}
-\begin{itemize}
-\item $f(u,v)/c(u,v)$
+\frametitle{Notation/Beispiele}
+$f(u,v)/c(u,v)$
+\vfill
 \note[item]{bei $f(u,v) = 0$ wird nur $c(u,v)$ angegeben}
-\end{itemize}
-\end{column}
-\begin{column}{.55\textwidth}
-\begin{adjustbox}{width=\textwidth}
+\begin{center}
+\begin{adjustbox}{width=0.8\textwidth}
 \begin{tikzpicture}
+\onslide<1->{
 \Vertex[label=$s$]{s}
 \Vertex[label=$v_1$, x=2, y=1]{1}
 \Vertex[label=$v_2$, x=2, y=-1]{2}
 \Vertex[label=$v_3$, x=4, y=1]{3}
 \Vertex[label=$v_4$, x=4, y=-1]{4}
-\Vertex[label=$t$, x=6, y=0]{t}
+\Vertex[label=$t$, x=6, y=0]{t}}
+\only<1>{
 \Edge[Direct, label=1/4](s)(1)
 \Edge[Direct, label=2/7](s)(2)
 \Edge[Direct, label=1/2](1)(3)
 \Edge[Direct, label=4](2)(3)
 \Edge[Direct, label=2/3](2)(4)
 \Edge[Direct, label=1/6](3)(t)
-\Edge[Direct, label=2/2](4)(t)
+\Edge[Direct, label=2/2](4)(t)}
+\only<2>{
+\Edge[Direct, label=5/7](s)(1)
+\Edge[Direct, label=1/1](1)(2)
+\Edge[Direct, label=2/3](1)(3)
+\Edge[Direct, label=2/100](1)(4)
+\Edge[Direct, label=1/1](2)(4)
+\Edge[Direct, label=2/2](3)(t)
+\Edge[Direct, label=3/3](4)(t)}
 \end{tikzpicture}
+\note[item]{Auch anderer maximaler Fluss denkbar}
 \end{adjustbox}
-\end{column}
-\end{columns}
+\end{center}
 \end{frame}
 
 \begin{frame}
 \frametitle{Wert eines Flusses}
-\begin{columns}
-\begin{column}{.45\textwidth}
-Wert $\lvert f \rvert$ eines Flusses $f$:
-\begin{equation}
-\lvert f \rvert = \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s) \nonumber
-\end{equation}
+Wert eines Flusses $f$:
+\begin{equation*}
+\lvert f \rvert := \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s)
+\end{equation*}
 \note[item]{Meist nur linker Term.}
 \note[item]{"Netto"}
 \note[item]{wegen Flusserhaltung gleich zu eingehendem Fluss in Senke}
-\end{column}
-\hfill
 \pause
-\begin{column}{.45\textwidth}
 \begin{figure}
-\begin{adjustbox}{width=\textwidth}
+\begin{adjustbox}{width=0.8\textwidth}
 \begin{tikzpicture}
 \Vertex[label=$s$]{s}
 \Vertex[label=$u_1$, x=2, y=1]{1}
@@ -209,27 +211,26 @@ Wert $\lvert f \rvert$ eines Flusses $f$:
 \Vertex[label=$u_3$, x=4, y=1]{3}
 \Vertex[label=$u_4$, x=4, y=-1]{4}
 \Vertex[label=$t$, x=6, y=0]{t}
-\Edge[Direct, label=2/4](s)(1)
+\Edge[Direct, label=1/4](s)(1)
 \Edge[Direct, label=6/7](s)(2)
-\Edge[Direct, label=2/2](1)(3)
+\Edge[Direct, label=1/2](1)(3)
 \Edge[Direct, label=4/4](2)(3)
 \Edge[Direct, label=2/3](2)(4)
-\Edge[Direct, label=6/6](3)(t)
+\Edge[Direct, label=5/6](3)(t)
 \Edge[Direct, label=2/2](4)(t)
 \end{tikzpicture}
 \end{adjustbox}
-\caption{Ein Fluss $f_{max}$ mit $\lvert f_{max} \rvert = 8$}
+\caption{Ein Fluss $f$ mit $\lvert f\rvert = 7$}
 \end{figure}
-\end{column}
-\end{columns}
 \end{frame}
 
 \begin{frame}
 \frametitle{Maximaler-Fluss-Problem}
-\begin{flushleft}
-Gegeben: ein Flussnetzwerk $G = (V,E)$ und dessen Kapazitätsfunktion $c: V \times V \to \mathbb{N}$.\linebreak
-Gesucht: ein Fluss $f$, dessen Wert $\lvert f \rvert$ maximal für dieses Flussnetzwerk ist.
-\end{flushleft}
+\begin{itemize}
+\item<1-> Gegeben: ein Flussnetzwerk $G = (V,E)$ und dessen Kapazitätsfunktion $c$.
+\vfill
+\item<2-> Gesucht: ein Fluss $f$, dessen Wert $\lvert f \rvert$ maximal für dieses Flussnetzwerk ist.
+\end{itemize}
 \end{frame}
 
 \section{\ff -Algorithmen}
@@ -244,20 +245,24 @@ Gesucht: ein Fluss $f$, dessen Wert $\lvert f \rvert$ maximal für dieses Flussn
 \subsection{Restnetzwerke}
 \begin{frame}
 \frametitle{Restnetzwerke}
-\begin{itemize}
-\item Fluss $f$ in Flussnetzwerk $G=(V,E)$ induziert Restnetzwerk $G_{f}=(V,E_{f})$
-\item mit $E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}$
-\item wobei für $u,v \in V$ gilt: 
-\end{itemize}
-\begin{equation}
+Restkapazität:
+\begin{equation*}
 c_{f}(u,v) = 
 \begin{cases}
 c(u,v) - f(u,v) & \text{falls $(u,v)\in E$}\\
 f(v,u) & \text{falls $(v,u) \in E$}\\
 0 & \text{sonst}
 \end{cases}
-\nonumber
-\end{equation}
+\end{equation*}
+\pause
+\vfill
+Restkanten:
+\begin{equation*}
+E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}
+\end{equation*}
+\vfill
+\pause
+Ein Fluss $f$ in einem Flussnetzwerk $G=(V,E)$ induziert das Restnetzwerk $G_{f}=(V,E_{f})$.
 \note[item]{antiparallele Kanten möglich -> kein Flussnetzwerk}
 \note[item]{Überleitung Beispiele}
 \end{frame}
@@ -266,79 +271,74 @@ f(v,u) & \text{falls $(v,u) \in E$}\\
 \frametitle{Restnetzwerke}
 \begin{figure}[T]
 \centering
+\onslide<1->{
 \begin{subfigure}{0.45\textwidth}
 \begin{adjustbox}{width =\linewidth}
 \begin{tikzpicture}
-\Vertex[label=$s$, x=1]{s}
-\Vertex[label=$v_1$, x=2.25, y=1]{1}
-\Vertex[label=$v_2$, x=2.25, y=-1]{2}
-\Vertex[label=$v_3$, x=3.75, y=1]{3}
-\Vertex[label=$v_4$, x=3.75, y=-1]{4}
-\Vertex[label=$t$, x=5, y=0]{t}
-\Edge[Direct, label=1/4](s)(1)
-\Edge[Direct, label=2/7](s)(2)
-\Edge[Direct, label=1/2](1)(3)
-\Edge[Direct, label=4](2)(3)
-\Edge[Direct, label=2/3](2)(4)
-\Edge[Direct, label=1/6](3)(t)
-\Edge[Direct, label=2/2](4)(t)
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=2]{1}
+\Vertex[label=$v_2$, x=2, y=-2]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=2/3](s)(2)
+\Edge[Direct, label=1](2)(1)
+\Edge[Direct, label=3/7](1)(t)
+\Edge[Direct, label=2/2](2)(t)
 \end{tikzpicture}
 \end{adjustbox}
 \caption{Fluss $f$ in einem Flussnetzwerk $G = (V,E)$}
-\end{subfigure}
+\end{subfigure}}
 \hfill
+\onslide<2->{
 \begin{subfigure}{0.45\textwidth}
 \begin{adjustbox}{width =\linewidth}
 \begin{tikzpicture}
-\Vertex[label=$s$, x=1]{s}
-\Vertex[label=$v_1$, x=2.25, y=1]{1}
-\Vertex[label=$v_2$, x=2.25, y=-1]{2}
-\Vertex[label=$v_3$, x=3.75, y=1]{3}
-\Vertex[label=$v_4$, x=3.75, y=-1]{4}
-\Vertex[label=$t$, x=5, y=0]{t}
-\Edge[Direct, label=3, bend=15](s)(1)
-\Edge[Direct, label=1, bend=15](1)(s)
-\Edge[Direct, label=5, bend=15](s)(2)
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=2]{1}
+\Vertex[label=$v_2$, x=2, y=-2]{2}
+\Vertex[label=$t$, x=4, y=0]{t}
+\Edge[Direct, label=3](1)(s)
+\Edge[Direct, label=1, bend=15](s)(2)
 \Edge[Direct, label=2, bend=15](2)(s)
-\Edge[Direct, label=1, bend=15](1)(3)
-\Edge[Direct, label=1, bend=15](3)(1)
-\Edge[Direct, label=4](2)(3)
-\Edge[Direct, label=1, bend=15](2)(4)
-\Edge[Direct, label=2, bend=15](4)(2)
-\Edge[Direct, label=5, bend=15](3)(t)
-\Edge[Direct, label=1, bend=15](t)(3)
-\Edge[Direct, label=2](t)(4)
+\Edge[Direct, label=1](2)(1)
+\Edge[Direct, label=4, bend=15](1)(t)
+\Edge[Direct, label=3, bend=15](t)(1)
+\Edge[Direct, label=2](t)(2)
 \end{tikzpicture}
 \end{adjustbox}
-\caption{Restnetzwerk $G_f = (V,E_f)$}
-\end{subfigure}
+\caption{durch $f$ induziertes Restnetzwerk $G_f = (V,E_f)$}
+\end{subfigure}}
 \end{figure}
 \note[item]{Kanten in ursprünglicher Flussrichtung: wie viel mehr Fluss noch zulässig}
 \note[item]{Kanten entgegen Flussrichtung: wie viel Fluss kann zurückgeschickt werden}
 \note[item]{Kanten mit Restkapazität 0 nicht eingezeichnet}
-\begin{itemize}
-\item Definition eines Flusses $f'$ im Restnetzwerk analog zu Fluss in Flussnetzwerken.
-\end{itemize}
+Definition eines Flusses $f'$ im Restnetzwerk analog zu Fluss in Flussnetzwerken.
 \end{frame}
 
 \begin{frame}
 \frametitle{Erhöhung eines Flusses}
+Gegeben:
 \begin{itemize}
-\item Flussnetzwerk $G=(V,E)$ mit Fluss $f$
-\item Restnetzwerk $G_f$ mit Fluss $f'$
+\item Fluss $f$ im Flussnetzwerk $G=(V,E)$
+\item Fluss $f'$ im Restnetzwerk $G_f=(V,E_f)$
 \end{itemize}
-\vspace{0.05\textheight}
-\begin{align*}
-(f \uparrow f')(u,v)&=
+\vfill
+\onslide<2->{
+Erhöhung von $f$ um $f'$:
+\begin{equation*}
+(f \uparrow f')(u,v)=
 \begin{cases}
 f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
 0 & \text{sonst}
-\end{cases}\\
-\lvert f\uparrow f' \rvert &= \lvert f \rvert + \lvert f'\rvert
-\end{align*}
-\note[item]{$f \uparrow f'$ erklären}
-\vspace{0.05\textheight}
-Beweis über Umformen der Summen.
+\end{cases}
+\end{equation*}}
+\onslide<3->{
+Wert der Erhöhung:
+\begin{equation*}
+\lvert f\uparrow f' \rvert = \lvert f \rvert + \lvert f'\rvert
+\end{equation*}}
+\note[item]{Erhöhung erklären}
+\onslide<4->{Beweis: über Umformen der Summen. $\square$}
 \note[item]{Jetzt noch zu tun: finden eines Flusses in Gf -> Erweiterungspfade}
 \end{frame}
 
