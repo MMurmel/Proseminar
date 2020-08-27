@@ -5,12 +5,7 @@
 \title{Maximaler Fluss in Flussnetzwerken}
 \date{04.09.2020}
 
-%\usepackage{pgfpages}
-%\setbeameroption{show notes}
-\setbeamertemplate{footline}[frame number]
-\beamertemplatenavigationsymbolsempty
-
-%DEFAULT
+%PACKAGES
 \usepackage[utf8]{inputenc}
 \usepackage[german]{babel}
 \usepackage[T1]{fontenc}
@@ -18,6 +13,12 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+
+%OPTIONS
+%\setbeameroption{show notes}
+\setbeamertemplate{footline}[frame number]
+\beamertemplatenavigationsymbolsempty
+\setbeamertemplate{section in toc}{\inserttocsectionnumber.~\inserttocsection}
 
 %GRAPHING
 \usepackage{tikz-network}
@@ -47,7 +48,15 @@
 alle Codesnippets und Definitionen aus \citep{Cormen09}
 \end{frame}
 
-\section{Motivation}
+\section*{Motivation}
+\begin{frame}[plain]
+\begin{center}
+\begin{LARGE}
+Motivation
+\end{LARGE}
+\end{center}
+\end{frame}
+
 \begin{frame}
 \frametitle{Motivation}
 \begin{columns}
@@ -55,7 +64,7 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \begin{itemize}
 \item (Stoff-) Mengen auf mehreren Pfaden gleichzeitig transportiert
 \item Pfade durch Kapazitäten beschränkt\pause
-\item Beispiel Rechnernetze: Maximale Anzahl der gleichzeitig transportierten Pakete von A nach B?
+\item Beispiel Rechnernetze: Maximaler Durchsatz von A nach B?
 \end{itemize}
 \note[item]{!= Kapazitätsproblem}
 \end{column}
@@ -81,8 +90,15 @@ alle Codesnippets und Definitionen aus \citep{Cormen09}
 \end{columns}
 \end{frame}
 
+\section{Maximaler-Fluss-Problem}
+\begin{frame}[plain]
+\begin{center}
+\begin{LARGE}
+Maximaler-Fluss-Problem
+\end{LARGE}
+\end{center}
+\end{frame}
 
-\section{Grundlagen}
 \subsection{Flussnetzwerke}
 \begin{frame}
 \frametitle{Flussnetzwerke}
@@ -305,7 +321,15 @@ Gesucht: ein Fluss $f$, dessen Wert $\lvert f \rvert$ maximal für dieses Flussn
 \end{flushleft}
 \end{frame}
 
-\section{weitere Theorie}
+\section{\ff -Algorithmen}
+\begin{frame}[plain]
+\begin{center}
+\begin{LARGE}
+\ff -Algorithmen
+\end{LARGE}
+\end{center}
+\end{frame}
+
 \subsection{Restnetzwerke}
 \begin{frame}
 \frametitle{Restnetzwerke}
@@ -419,7 +443,6 @@ Beweis über Umformen der Summen.
 \note[item]{alles zusammen für \ff-Algorithmus}
 \end{frame}
 
-\section{Algorithmen}
 \subsection{Ford-Fulkerson}
 \begin{frame}
 \frametitle{\ff-Basisalgorithmus}
@@ -582,7 +605,16 @@ Beweis über Umformen der Summen.
 \note[item]{Breitensuche}
 \end{frame}
 
-\subsection{Push-Relabel}
+\section{\pr -Algorithmen}
+\begin{frame}[plain]
+\begin{center}
+\begin{LARGE}
+\pr -Algorithmen
+\end{LARGE}
+\end{center}
+\end{frame}
+
+\subsection{Operationen}
 \begin{frame}
 \frametitle{\pr -Grundlagen}
 \begin{itemize}
@@ -618,6 +650,7 @@ e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
 \end{adjustbox}
 \end{frame}
 
+\subsection{generischer Algorithmus}
 \begin{frame}
 \frametitle{generischer \pr -Algorithmus}
 \centering
