@@ -448,7 +448,7 @@ Damit:
 \frametitle{\ff-Analyse}
 Eigenschaften des generischen \ff-Algorithmus:
 \begin{itemize}
-\item<1-> Terminiert stets bei Kantengewichten aus $\mathbb{N}$ (und $\mathbb{Q}^+$)
+\item<1-> Terminiert stets bei Kantengewichten aus $\mathbb{N}$ (und $\mathbb{Q}$)
 \item<2-> Fluss ist maximal wegen \alert{maxflow-mincut-Theorem} 
 \begin{itemize}
 \item u.A.: $\lvert f\rvert$ ist maximal $\Leftrightarrow$ kein Erweiterungspfad in $G_{f}$
@@ -582,23 +582,25 @@ Wahl des Erweiterungspfades als ein kürzester Pfad (minimale Pfadlänge)
 \subsection{Operationen}
 \begin{frame}
 \frametitle{\pr -Grundlagen}
-\begin{itemize}
 \note[item]{lokaler als \ff}
 \note[item]{spezielle Parameter der Knoten}
-\item arbeitet mit Vorfluss: \begin{equation}
+\onslide<1->{
+arbeitet mit Vorfluss: 
+\begin{equation*}
 \forall u \in V\setminus\{ s\} :\sum_{v\in V} f(v,u) \geq \sum_{v\in V} f(u,v)
-\nonumber
-\end{equation}
-\item Flussüberschuss $e(u)$ des Knotens $u \in V$: \begin{equation}
+\end{equation*}}
+\onslide<2->{
+Flussüberschuss $e(u)$ des Knotens $u \in V$: 
+\begin{equation*}
 e(u) = \sum_{v\in V} f(v,u) - \sum_{v\in V} f(u,v)
-\nonumber
-\end{equation}
+\end{equation*}}
 \note[item]{Knoten ist überflutet bei $e(u) > 0$}
-\item Höhenfunktion $h: V\to \mathbb{N}$ mit $h(s) = \lvert V\rvert, h(t)=0$ und: \begin{equation}
+\onslide<3->{
+Höhenfunktion $h: V\to \mathbb{N}$:
+\begin{equation*}
 \forall (u,v) \in E_f:h(u) \leq h(v) + 1
-\nonumber
-\end{equation}
-\end{itemize}
+\end{equation*}}
+\onslide<4->{$h(S) = \lvert V\rvert$, $h(t)=0$}
 \end{frame}
 
 \begin{frame}
