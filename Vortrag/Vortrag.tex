@@ -335,22 +335,103 @@ f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
 \onslide<3->{
 Wert der Erhöhung:
 \begin{equation*}
-\lvert f\uparrow f' \rvert = \lvert f \rvert + \lvert f'\rvert
+\alert{\lvert f\uparrow f' \rvert = \lvert f \rvert + \lvert f'\rvert}
 \end{equation*}}
 \note[item]{Erhöhung erklären}
 \onslide<4->{Beweis: über Umformen der Summen. $\square$}
 \note[item]{Jetzt noch zu tun: finden eines Flusses in Gf -> Erweiterungspfade}
 \end{frame}
 
+\begin{frame}
+\frametitle{Erhöhung eines Flusses}
+\begin{figure}[T]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\onslide<1->{
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=2]{1}
+\Vertex[label=$v_2$, x=2, y=-2]{2}
+\Vertex[label=$t$, x=4, y=0]{t}}
+\only<-2>{
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=2/3](s)(2)
+\Edge[Direct, label=1](2)(1)
+\Edge[Direct, label=3/7](1)(t)
+\Edge[Direct, label=2/2](2)(t)}
+\only<3>{
+\Edge[Direct, label=3/3](s)(1)
+\Edge[Direct, label=3/3](s)(2)
+\Edge[Direct, label=1/1](2)(1)
+\Edge[Direct, label=4/7](1)(t)
+\Edge[Direct, label=2/2](2)(t)}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{\only<-2>{$f$ in $G$}\only<3>{$f\uparrow f'$ in $G$}}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\begin{adjustbox}{width =\linewidth}
+\begin{tikzpicture}
+\onslide<1->{
+\Vertex[label=$s$]{s}
+\Vertex[label=$v_1$, x=2, y=2]{1}
+\Vertex[label=$v_2$, x=2, y=-2]{2}
+\Vertex[label=$t$, x=4, y=0]{t}}
+\only<1>{
+\Edge[Direct, label=3](1)(s)
+\Edge[Direct, label=1, bend=15](s)(2)
+\Edge[Direct, label=2, bend=15](2)(s)
+\Edge[Direct, label=1](2)(1)
+\Edge[Direct, label=4, bend=15](1)(t)
+\Edge[Direct, label=3, bend=15](t)(1)
+\Edge[Direct, label=2](t)(2)}
+\only<2>{
+\Edge[Direct, label=3](1)(s)
+\Edge[Direct, label=1/1, bend=15](s)(2)
+\Edge[Direct, label=2, bend=15](2)(s)
+\Edge[Direct, label=1/1](2)(1)
+\Edge[Direct, label=1/4, bend=15](1)(t)
+\Edge[Direct, label=3, bend=15](t)(1)
+\Edge[Direct, label=2](t)(2)}
+\only<3>{
+\Edge[Direct, label=3](1)(s)
+\Edge[Direct, label=3](2)(s)
+\Edge[Direct, label=1](1)(2)
+\Edge[Direct, label=3, bend=15](1)(t)
+\Edge[Direct, label=4, bend=15](t)(1)
+\Edge[Direct, label=2](t)(2)}
+\end{tikzpicture}
+\end{adjustbox}
+\caption{\only<1>{$G_f$}\only<2>{$f'$ in $G_f$}\only<3>{$G_{f\uparrow f'}$}}
+\end{subfigure}
+\end{figure}
+\end{frame}
+
 \subsection{Erweiterungspfade}
 \begin{frame}
 \frametitle{Erweiterungspfade}
+Gegeben:
 \begin{itemize}
-\item Pfad $p$ im Restnetzwerk $G_f$ von $s$ nach $t$
-\item Pfadkapazität $c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}$
-\item Definiere Fluss $f_p$ entlang von $p$ mit $f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}$
-\item dann: $\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert$
+\item Pfad $p$ von $s$ nach $t$ im Restnetzwerk $G_f$
 \end{itemize}
+\vfill
+\onslide<2->{
+Pfadkapazität:
+\begin{equation*}
+c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}
+\end{equation*}}
+\onslide<3->{
+Definiere Fluss $f_p$ entlang von $p$:
+\begin{equation*}
+f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}
+\end{equation*}}
+\onslide<4->{
+Damit:
+\begin{equation*}
+\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert
+\end{equation*}}
 \note[item]{alles zusammen für \ff-Algorithmus}
 \end{frame}
 
@@ -364,14 +445,16 @@ Wert der Erhöhung:
 \end{frame}
 
 \begin{frame}
-\frametitle{\ff-Basisalgorithmus}
+\frametitle{\ff-Analyse}
+Eigenschaften des generischen \ff-Algorithmus:
 \begin{itemize}
-\item Fluss ist maximal wegen maxflow-mincut-Theorem \begin{itemize}
+\item<1-> Terminiert stets bei Kantengewichten aus $\mathbb{N}$ (und $\mathbb{Q}^+$)
+\item<2-> Fluss ist maximal wegen \alert{maxflow-mincut-Theorem} 
+\begin{itemize}
 \item u.A.: $\lvert f\rvert$ ist maximal $\Leftrightarrow$ kein Erweiterungspfad in $G_{f}$
 \end{itemize}
-\item Terminiert stets bei Kantengewichten aus $\mathbb{N}$
-\item $\mathcal{O}(\lvert f_{max}\rvert \cdot E)$ für einen maximalen Fluss $f_{max}$
-\item Problem: schlechte Wegewahl möglich
+\item<3-> Laufzeit: $\mathcal{O}(\lvert f_{max}\rvert \cdot E)$ für einen maximalen Fluss $f_{max}$
+\item<4-> Problem: schlechte Wegewahl möglich
 \end{itemize}
 \note[item]{bei rationalen Zahlen Multiplikation mit Hauptnenner}
 \note[item]{Terminierung bzw. Konvergenz bei reellen Zahlen nicht sichergestellt}
@@ -379,61 +462,35 @@ Wert der Erhöhung:
 
 \begin{frame}
 \frametitle{schlechte Wegewahl}
+\vfill
 \begin{figure}[T]
 \centering
 \begin{subfigure}{0.45\textwidth}
 \begin{adjustbox}{width =\linewidth}
 \begin{tikzpicture}
+\onslide<1->{
 \Vertex[label=$s$]{s}
 \Vertex[label=$v_1$, x=2, y=1]{1}
 \Vertex[label=$v_2$, x=2, y=-1]{2}
-\Vertex[label=$t$, x=4]{t}
+\Vertex[label=$t$, x=4]{t}}
+\only<1-2>{
 \Edge[Direct, label=100](s)(1)
 \Edge[Direct, label=100](s)(2)
 \Edge[Direct, label=1](1)(2)
 \Edge[Direct, label=100](1)(t)
-\Edge[Direct, label=100](2)(t)
-\end{tikzpicture}
-\end{adjustbox}
-\caption{$G$ mit $f$}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.45\textwidth}
-\begin{adjustbox}{width =\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$]{s}
-\Vertex[label=$v_1$, x=2, y=1]{1}
-\Vertex[label=$v_2$, x=2, y=-1]{2}
-\Vertex[label=$t$, x=4]{t}
-\Edge[Direct, label=100, color=red](s)(1)
-\Edge[Direct, label=100](s)(2)
-\Edge[Direct, label=1, color=red](1)(2)
-\Edge[Direct, label=100](1)(t)
-\Edge[Direct, label=100, color=red](2)(t)
-\end{tikzpicture}
-\end{adjustbox}
-\caption{$G_f$}
-\end{subfigure}
-\caption{gewählter Erweiterungspfad in rot}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{schlechte Wegewahl}
-\begin{figure}[T]
-\centering
-\begin{subfigure}{0.45\textwidth}
-\begin{adjustbox}{width =\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$]{s}
-\Vertex[label=$v_1$, x=2, y=1]{1}
-\Vertex[label=$v_2$, x=2, y=-1]{2}
-\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=100](2)(t)}
+\only<3-4>{
 \Edge[Direct, label=1/100](s)(1)
 \Edge[Direct, label=100](s)(2)
 \Edge[Direct, label=1/1](1)(2)
 \Edge[Direct, label=100](1)(t)
-\Edge[Direct, label=1/100](2)(t)
+\Edge[Direct, label=1/100](2)(t)}
+\only<5-6>{
+\Edge[Direct, label=1/100](s)(1)
+\Edge[Direct, label=1/100](s)(2)
+\Edge[Direct, label=1/1](1)(2)
+\Edge[Direct, label=1/100](1)(t)
+\Edge[Direct, label=1/100](2)(t)}
 \end{tikzpicture}
 \end{adjustbox}
 \caption{$G$ mit $f$}
@@ -442,53 +499,50 @@ Wert der Erhöhung:
 \begin{subfigure}{0.45\textwidth}
 \begin{adjustbox}{width =\linewidth}
 \begin{tikzpicture}
+\onslide<1->{
 \Vertex[label=$s$]{s}
 \Vertex[label=$v_1$, x=2, y=1]{1}
 \Vertex[label=$v_2$, x=2, y=-1]{2}
-\Vertex[label=$t$, x=4]{t}
+\Vertex[label=$t$, x=4]{t}}
+\only<1>{
+\Edge[Direct, label=100](s)(1)
+\Edge[Direct, label=100](s)(2)
+\Edge[Direct, label=1](1)(2)
+\Edge[Direct, label=100](1)(t)
+\Edge[Direct, label=100](2)(t)}
+\only<2>{
+\Edge[Direct, label=100, color=red](s)(1)
+\Edge[Direct, label=100](s)(2)
+\Edge[Direct, label=1, color=red](1)(2)
+\Edge[Direct, label=100](1)(t)
+\Edge[Direct, label=100, color=red](2)(t)}
+\only<3>{
+\Edge[Direct, label=99, bend=15](s)(1)
+\Edge[Direct, label=1, bend=15](1)(s)
+\Edge[Direct, label=100](s)(2)
+\Edge[Direct, label=1](2)(1)
+\Edge[Direct, label=100](1)(t)
+\Edge[Direct, label=99, bend=15](2)(t)
+\Edge[Direct, label=1, bend=15](t)(2)}
+\only<4>{
 \Edge[Direct, label=99, bend=15](s)(1)
 \Edge[Direct, label=1, bend=15](1)(s)
 \Edge[Direct, label=100, color=red](s)(2)
 \Edge[Direct, label=1, color=red](2)(1)
 \Edge[Direct, label=100, color=red](1)(t)
 \Edge[Direct, label=99, bend=15](2)(t)
-\Edge[Direct, label=1, bend=15](t)(2)
-\end{tikzpicture}
-\end{adjustbox}
-\caption{$G_f$}
-\end{subfigure}
-\caption{gewählter Erweiterungspfad in rot}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{schlechte Wegewahl}
-\begin{figure}[T]
-\centering
-\begin{subfigure}{0.45\textwidth}
-\begin{adjustbox}{width =\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$]{s}
-\Vertex[label=$v_1$, x=2, y=1]{1}
-\Vertex[label=$v_2$, x=2, y=-1]{2}
-\Vertex[label=$t$, x=4]{t}
-\Edge[Direct, label=1/100](s)(1)
-\Edge[Direct, label=1/100](s)(2)
+\Edge[Direct, label=1, bend=15](t)(2)}
+\only<5>{
+\Edge[Direct, label=99, bend=15](s)(1)
+\Edge[Direct, label=1, bend=15](1)(s)
+\Edge[Direct, label=99, bend=15](s)(2)
+\Edge[Direct, label=1, bend=15](2)(s)
 \Edge[Direct, label=1](1)(2)
-\Edge[Direct, label=1/100](1)(t)
-\Edge[Direct, label=1/100](2)(t)
-\end{tikzpicture}
-\end{adjustbox}
-\caption{$G$ mit $f$}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.45\textwidth}
-\begin{adjustbox}{width =\linewidth}
-\begin{tikzpicture}
-\Vertex[label=$s$]{s}
-\Vertex[label=$v_1$, x=2, y=1]{1}
-\Vertex[label=$v_2$, x=2, y=-1]{2}
-\Vertex[label=$t$, x=4]{t}
+\Edge[Direct, label=99, bend=15](1)(t)
+\Edge[Direct, label=1, bend=15](t)(1)
+\Edge[Direct, label=99, bend=15](2)(t)
+\Edge[Direct, label=1, bend=15](t)(2)}
+\only<6>{
 \Edge[Direct, label=99, bend=15, color=red](s)(1)
 \Edge[Direct, label=1, bend=15](1)(s)
 \Edge[Direct, label=99, bend=15](s)(2)
@@ -497,7 +551,7 @@ Wert der Erhöhung:
 \Edge[Direct, label=99, bend=15](1)(t)
 \Edge[Direct, label=1, bend=15](t)(1)
 \Edge[Direct, label=99, bend=15, color=red](2)(t)
-\Edge[Direct, label=1, bend=15](t)(2)
+\Edge[Direct, label=1, bend=15](t)(2)}
 \end{tikzpicture}
 \end{adjustbox}
 \caption{$G_f$}
@@ -508,8 +562,8 @@ Wert der Erhöhung:
 
 \begin{frame}
 \frametitle{Edmonds-Karp-Algorithmus}
+Wahl des Erweiterungspfades als ein kürzester Pfad (minimale Pfadlänge)
 \begin{itemize}
-\item Wahl des Erweiterungspfades als ein kürzester Pfad
 \item $\mathcal{O}(V\cdot E^2)$
 \end{itemize}
 \note[item]{kürzester Pfad meint Anzahl an Kanten}
