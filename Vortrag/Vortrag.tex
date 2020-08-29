@@ -13,8 +13,13 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 
 %OPTIONS
+%no "then" or "do" in algorithm
+\renewcommand\algorithmicthen{}
+\renewcommand\algorithmicdo{}
 %\setbeameroption{show notes}
 \setbeamertemplate{footline}[frame number]
 \beamertemplatenavigationsymbolsempty
@@ -438,9 +443,24 @@ Damit:
 \subsection{generischer Algorithmus}
 \begin{frame}
 \frametitle{\ff-Basisalgorithmus}
-\begin{adjustbox}{width = \textwidth}
-\includegraphics{../Grafiken/FF-Basis.png}
-\end{adjustbox}
+\begin{algorithm}[H]
+    \caption{\ff (G,s,t)}
+\begin{algorithmic}[1]
+\For{jede Kante $(u,v) \in G.E$}
+    \State $(u,v).f = 0$
+\EndFor
+\While{$\exists$ Pfad $p$ von $s$ nach $t$ in $G_f$}
+    \State $c_{f}(p) =$ min\{$c_{f}(u,v) \mid (u,v)$ liegt auf $p$\}
+    \For{jede Kante $(u,v)$ von $p$}
+        \If{$(u,v) \in G.E$}
+            \State $(u,v).f = (u,v).f + c_{f}(p)$
+        \Else
+            \State $(v,u).f = (v,u).f - c_{f}(p)$
+        \EndIf
+    \EndFor
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
 \note[item]{Jack Edmonds und Richard Karp, 1970}
 \end{frame}
 
@@ -579,7 +599,7 @@ Wahl des Erweiterungspfades als ein kürzester Pfad (minimale Pfadlänge)
 \end{center}
 \end{frame}
 
-\subsection{Operationen}
+\subsection{Grundlagen}
 \begin{frame}
 \frametitle{\pr -Grundlagen}
 \note[item]{lokaler als \ff}
@@ -603,30 +623,74 @@ Höhenfunktion $h: V\to \mathbb{N}$:
 \onslide<4->{$h(S) = \lvert V\rvert$, $h(t)=0$}
 \end{frame}
 
+\subsection{Operationen}
 \begin{frame}
 \frametitle{Push-Operation}
-\begin{adjustbox}{width = \textwidth}
-\includegraphics{../Grafiken/Push.png}
-\end{adjustbox}
+\begin{algorithm}[H]
+    \caption{Push(u,v)}
+\begin{algorithmic}[1]
+\State{\textbf{// Anwendbar wenn:} $u.e > 0$, $c_{f}(u,v)>0$, und $u.h=v.h + 1$.}
+\State{\textbf{// Aktion:} Drücke $\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$ Flusseinheiten von $u$ nach $v$.}
+\State{}
+\State{$\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$}
+\If{$(u,v)\in E$}
+    \State{$(u,v).f = (u,v).f +\Delta_{f}(u,v)$}
+\Else
+    \State{$(v,u).f = (v,u).f -\Delta_{f}(u,v)$}
+\EndIf
+\State{$u.e = u.e - \Delta_{f}(u,v)$}
+\State{$v.e = v.e + \Delta_{f}(u,v)$}
+\end{algorithmic}
+\end{algorithm}
 \end{frame}
 
 \begin{frame}
 \frametitle{Relabel-Operation}
-\begin{adjustbox}{width = \textwidth}
-\includegraphics{../Grafiken/Relabel.png}
-\end{adjustbox}
+\begin{algorithm}[H]
+    \caption{Relabel(u)}
+\begin{algorithmic}[1]
+\State{\textbf{// Anwendbar wenn:} $u.e > 0$, und $u.h \leq v.h$ für alle $v \in V$ mit $(u,v)\in E_f$.}
+\State{\textbf{// Aktion:} setze u.h auf einen höheren Wert.}
+\State{}
+\State{$u.h = 1 +$min\{$v.h \mid (u,v)\in E_f$\}}
+\end{algorithmic}
+\end{algorithm}
 \end{frame}
 
 \subsection{generischer Algorithmus}
 \begin{frame}
+\frametitle{Initialisierung}
+\begin{algorithm}[H]
+    \caption{Initialize-Preflow(G,s)}
+\begin{algorithmic}[1]
+\For{jeden Knoten $v \in G.V$}
+    \State $v.h = 0$
+    \State $v.e = 0$
+\EndFor
+\For{jede Kante $(u,v)\in G.E$}
+    \State $(u,v).f = 0$
+\EndFor
+\State{$s.h = \lvert G.V\rvert$}
+\For{jeden Knoten $v$ mit $(s,v)\in G.E$}
+    \State $(s,v).f = c(s,v)$
+    \State $v.e = c(s,v)$
+    \State $s.e = s.e - c(s,v)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+\end{frame}
+
+\begin{frame}
 \frametitle{generischer \pr -Algorithmus}
-\centering
-\begin{adjustbox}{width = 0.5\textwidth}
-\includegraphics{../Grafiken/Init-Preflow.png}
-\end{adjustbox}
-\begin{adjustbox}{width = \textwidth}
-\includegraphics{../Grafiken/Generic-PR.png}
-\end{adjustbox}
+\begin{algorithm}[H]
+    \caption{Generic-\pr}
+\begin{algorithmic}[1]
+\State{Initialize-Preflow(G,s)}
+\While{es existiert eine ausführbare Push- oder Relabel-Operation}
+    \State{wähle eine ausführbare Push- oder Relabel-Operation und führe sie aus}
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
 \end{frame}
 
 \begin{frame}
