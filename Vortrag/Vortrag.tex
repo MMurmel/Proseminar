@@ -116,6 +116,7 @@ Maximaler-Fluss-Problem
 \item<3-> Quelle $s$ und Senke $t$
 \item<4-> jeder Knoten $v$ liegt auf einem Pfad von $s$ nach $t$
 \item<5-> Keine reflexiven Kanten (gleicher Start- und Zielknoten)
+\item<6-> Keine entgegen gerichteten Kanten
 \end{itemize}
 \note[item]{reflexive Kanten verboten: Beispiel Spannung beim Stromfluss}
 \end{column}
@@ -461,7 +462,7 @@ Damit:
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
-\note[item]{Jack Edmonds und Richard Karp, 1970}
+\note[item]{Lester R. Ford Jr., Delbert R. Fulkerson, 1956}
 \end{frame}
 
 \begin{frame}
@@ -473,7 +474,7 @@ Eigenschaften des generischen \ff-Algorithmus:
 \begin{itemize}
 \item u.A.: $\lvert f\rvert$ ist maximal $\Leftrightarrow$ kein Erweiterungspfad in $G_{f}$
 \end{itemize}
-\item<3-> Laufzeit: $\mathcal{O}(\lvert f_{max}\rvert \cdot E)$ für einen maximalen Fluss $f_{max}$
+\item<3-> Laufzeit: $\mathcal{O}(\lvert f_{max}\rvert \cdot (E + V))$ für einen maximalen Fluss $f_{max}$
 \item<4-> Problem: schlechte Wegewahl möglich
 \end{itemize}
 \note[item]{bei rationalen Zahlen Multiplikation mit Hauptnenner}
@@ -586,6 +587,7 @@ Wahl des Erweiterungspfades als ein kürzester Pfad (minimale Pfadlänge)
 \begin{itemize}
 \item $\mathcal{O}(V\cdot E^2)$
 \end{itemize}
+\note[item]{Jack Edmonds und Richard Karp, 1972}
 \note[item]{kürzester Pfad meint Anzahl an Kanten}
 \note[item]{Breitensuche}
 \end{frame}
@@ -1016,8 +1018,32 @@ Eigenschaften des generischen \pr-Algorithmus:
 \end{itemize}
 \end{frame}
 
-%TODO: Gegenüberstellung (Vergleich) Algorithmen
-%TODO: Zusammenfassung Vortrag
+\section*{Zusammenfassung}
+\begin{frame}[plain]
+\begin{center}
+\begin{LARGE}
+Zusammenfassung
+\end{LARGE}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Anwendungsfälle}
+\begin{itemize}
+\item<1-> Kalter Krieg: Zerstörung von Schienennetzwerken mit geringstem Aufwand (minimum cut)
+\item<2-> maximale bipartite Matchings (z.B. Zuteilung von Arbeitern und Jobs)
+\item<3-> automatisierte Erkennung von Vordergrund und Hintergrund in Bildbearbeitung
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Zusammenfassung}
+\onslide<1->{\ff - und \pr -Algorithmen lösen das maximaler-Fluss-Problem.}
+\vfill
+\onslide<2->{Heutzutage sind schnellere \pr -Algorithmen bekannt.}
+\vfill
+\onslide<3->{Zahlreiche Anwendungen}
+\end{frame}
 
 \begin{frame}
 \frametitle{Literatur}
