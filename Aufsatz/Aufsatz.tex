@@ -37,24 +37,46 @@
 \tableofcontents
 
 \begin{abstract}
+In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms \grqq{} \citep{Cormen09} gegeben werden. 
+Dabei soll insbesondere auf den \pr -Algorithmus eingegangen und ein Vergleich zum \ff -Algorithmus gezogen werden.
 \end{abstract}
 
 \section{Grundlagen}
-In diesem Abschnitt werden die grundlegenen Voraussetzungen geschaffen, um das Problem des maximalen Flusses formulieren zu können.
+In diesem Abschnitt werden die grundlegenden Voraussetzungen geschaffen, um das Problem des maximalen Flusses sinnvoll formulieren zu können.
 
-\subsection{Flussnetzwerk}
+\subsection{Flussnetzwerke}
 Ein Flussnetzwerk ist ein gerichteter Graph $G = (V,E)$, in dem jeder Kante $(u,v) \in E$ durch eine Kapazitätsfunktion $c: V\times V\to\mathfrak{B}$ eine Kapazität $c(u,v) \geq 0$ zugeordnet ist.
-Dabei ist häufig $\mathfrak{B} = \mathbb{N}$, jedoch ist auch $\mathfrak{B} = \mathbb{Z}$ oder $\mathfrak{B} = \mathbb{R}$ möglich.
+Dabei ist häufig $\mathfrak{B} = \mathbb{N}$, seltener auch $\mathfrak{B} = \mathbb{Z}$ oder $\mathfrak{B} = \mathbb{R}$.
 Für $(u,v) \notin E$ sei $c(u,v) = 0$.
-Darüber hinaus fordern wir: 
-\begin{equation} \label{noparallel}
+Außerdem fordern wir:
+\begin{equation} \label{no_parallel}
 \forall (u,v)\in V\times V: (u,v)\in E \Rightarrow (v,u)\notin E\\
 \end{equation}
+Wir verbieten also entgegengerichtete Kantenpaare.
+Darüber hinaus darf es in einem Flussnetzwerk auch keine reflexiven Kanten -- also Kanten mit gleichem Start- und Zielknoten -- geben.
 
+Jedes Flussnetzwerk enthält zwei besondere Knoten: Eine Quelle $s$ und eine Senke $t$.
+Der Einfachheit halber liege jeder Knoten $v \in V$ auf einem Pfad von $s$ nach $t$.
 
-\newpage
-\section{\ff}
+Grafik 1.a) zeigt ein Beispiel für ein Flussnetzwerk.
+
+\subsection{Fluss in Flussnetzwerken}
+Ein Fluss $f$ in einem Flussnetzwerk $G=(V,E)$ ist eine Funktion $f: V \times V \to \mathfrak{B}$. Von nun an soll $\mathfrak{B} = \mathbb{N}$ betrachtet werden.
+Dabei muss ein Fluss drei besondere Bedingungen erfüllen:
+\begin{align}
+&\forall u,v\in V\colon (u,v)\notin E\Rightarrow f(u,v) = 0 \label{only_on_edges} \\
+&\forall u,v\in V\colon 0\leq f(u,v)\leq c(u,v) \label{limited_by_capacity} \\
+&\forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v) \label{flow_continuation}
+\end{align}
+
+\section{Weiterführende Theorie}
+\subsection{Restnetzwerke}
+\subsection{Erweiterungspfade}
+
+\section{\ff -Algorithmen}
 Zunächst soll die Klasse der \ff -Algorithmen vorgestellt werden.
+
+\section{\pr -Algorithmen}
 
 \newpage
 \bibliography{../../references}{}
