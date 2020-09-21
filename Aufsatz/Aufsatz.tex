@@ -14,12 +14,20 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{microtype}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 
 %OPTIONS
 %no "then" or "do" in algorithm
 \renewcommand\algorithmicthen{}
 \renewcommand\algorithmicdo{}
+%
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Anmerkung}
 
 %GRAPHING
 \usepackage{tikz-network}
@@ -46,7 +54,7 @@
 \begin{abstract}
 In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms \grqq{} \citep{Cormen09} gegeben werden. 
 Dabei soll insbesondere auf den \pr -Algorithmus eingegangen und ein Vergleich zum \ff -Algorithmus gezogen werden.
-
+\medbreak
 Die Fragestellung nach dem maximalen Fluss ist ein Problem aus der Graphentheorie, das
 in vielen praktischen Fällen Anwendung findet. 
 Überall dort, wo die Menge einer zwischen verschiedenen Punkten transportierten Ware maximiert werden soll, kann auf die hier entwickelten Lösungen zurückgegriffen werden. 
@@ -56,6 +64,7 @@ Besonders an letzterem lassen sich die Intuitionen hinter den Formeln gut erklä
 
 \section{Grundlagen}
 In diesem Abschnitt werden die grundlegenden Voraussetzungen geschaffen, um das Problem des maximalen Flusses sinnvoll formulieren zu können.
+Darüber hinaus werden einige Konzepte erarbeitet, die für das Verständnis der Algorithmen unerlässlich sind.
 
 \subsection{Flussnetzwerke}
 Ein Flussnetzwerk ist ein gerichteter Graph $G = (V,E)$, in dem jeder Kante $(u,v) \in E$ durch eine Kapazitätsfunktion $c: V\times V\to\mathfrak{B}$ eine Kapazität $c(u,v) \geq 0$ zugeordnet ist.
@@ -68,12 +77,11 @@ Außerdem fordern wir:
 \end{equation}
 Wir verbieten also entgegengerichtete Kantenpaare.
 Darüber hinaus darf es in einem Flussnetzwerk auch keine reflexiven Kanten -- also Kanten mit gleichem Start- und Zielknoten -- geben.
-Statt zu zeigen, dass dies keine echten Einschränkungen sind, sei hier auf \cite[Kapitel, 26]{Cormen09} verwiesen.
-
+Statt zu zeigen, dass dies keine echten Einschränkungen sind, sei hier auf \cite{Cormen09} verwiesen.
+\medbreak
 Jedes Flussnetzwerk enthält zwei besondere Knoten: Eine Quelle $s$ und eine Senke $t$.
-Der Einfachheit halber liege jeder Knoten $v \in V$ auf einem Pfad von $s$ nach $t$.
-
-Abbildung \ref{fig:1.1} zeigt ein Beispiel für ein Flussnetzwerk.
+Der Einfachheit halber liege jeder Knoten $v \in V$ auf einem Pfad von $s$ nach $t$.\\
+Abbildung \ref{fig:flow_network.1} zeigt ein Beispiel für ein Flussnetzwerk.
 
 \subsection{Fluss in Flussnetzwerken}
 Ein Fluss $f$ in einem Flussnetzwerk $G=(V,E)$ ist eine Funktion $f: V \times V \to \mathfrak{B}$.
@@ -84,24 +92,10 @@ Dabei muss ein Fluss drei besondere Bedingungen erfüllen:
 &\forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v) \label{flow_continuation}
 \end{align}
 Die Eigenschaft \eqref{flow_continuation} trägt den Namen Flusserhaltung. 
-Im Beispiel des Stromflusses entspricht sie der Kirchhoffschen Knotenregel.
+Im Beispiel des Stromflusses entspricht sie der Kirchhoffschen Knotenregel.\\
+Abbildung \ref{fig:flow_network.2} zeigt einen Fluss.
 
-Abbildung \ref{fig:1.2} zeigt einen Fluss.
-
-\subsection{Wert eines Flusses}
-Der Wert $\lvert f \rvert$ eines Flusses $f$ ist definiert als:
-\begin{equation}\label{flow_value}
-\lvert f \rvert := \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s)
-\end{equation}
-Der Wert eines Flusses ist also die Menge an Fluss, die \glqq netto\grqq{} aus der Quelle $s$ herausfließt.
-Wegen \eqref{flow_continuation} ist gleich der Menge an Fluss, die (\glqq netto\grqq{}) in die Senke $t$ hineinfließt.
-Häufig enthält ein Flussnetzwerk keine eingehenden Kanten zur Quelle, womit sich die Gleichung zu $\lvert f \rvert := \sum_{u\in V} f(s,u)$ vereinfacht.
-
-Im maximaler-Fluss-Problem ist ein Flussnetzwerk $G$ mit Quelle $s$ und Senke $t$ gegeben.
-Gesucht wird ein Fluss $f$, dessen Wert $\lvert f\rvert$ maximal für dieses Flussnetzwerk ist.
-Dieser Fluss muss nicht eindeutig bestimmt sein. %TODO Bild
-
-\begin{figure}\label{fig:1}
+\begin{figure}
     \centering
     \begin{subfigure}[t]{.475\textwidth}
         \centering
@@ -121,7 +115,7 @@ Dieser Fluss muss nicht eindeutig bestimmt sein. %TODO Bild
             \Edge[Direct, label=2](4)(t)
         \end{tikzpicture}
         \caption{Ein Flussnetzwerk $G$}
-        \label{fig:1.1}
+        \label{fig:flow_network.1}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{.475\textwidth}
@@ -142,16 +136,35 @@ Dieser Fluss muss nicht eindeutig bestimmt sein. %TODO Bild
             \Edge[Direct, label=2/2](4)(t)
         \end{tikzpicture}
         \caption{Ein Fluss $f$ in $G$ mit $\lvert f\rvert = 3$}
-        \label{fig:1.2}
+        \label{fig:flow_network.2}
     \end{subfigure}
     \caption{In der hier verwendeten Darstellung werden Kanten $(u,v)$ mit $f(u,v)/c(u,v)$ beschrifet. Ist $f(u,v) = 0$, so wird nur die Kapazität angegeben.}
+    \label{fig:flow_network}
 \end{figure}
 
-\section{Weiterführende Theorie}
+\subsection{Wert eines Flusses}
+Der Wert $\lvert f \rvert$ eines Flusses $f$ ist definiert als:
+\begin{equation}\label{flow_value}
+\lvert f \rvert := \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s)
+\end{equation}
+Er entspricht also der Menge an Fluss, die \glqq netto\grqq{} aus der Quelle $s$ herausfließt.
+Wegen \eqref{flow_continuation} also auch der Menge an Fluss, die (\glqq netto\grqq{}) in die Senke $t$ hineinfließt.
+Häufig enthält ein Flussnetzwerk keine eingehenden Kanten zur Quelle, womit sich die Gleichung zu $\lvert f \rvert := \sum_{u\in V} f(s,u)$ vereinfacht.
+Wir können nun das maximaler-Fluss-Problem formal definieren:
+
+\begin{definition}
+Im maximaler-Fluss-Problem ist ein Flussnetzwerk $G$ mit Quelle $s$ und Senke $t$ gegeben.
+Gesucht wird ein Fluss $f$, dessen Wert $\lvert f\rvert$ maximal für dieses Flussnetzwerk ist.
+\end{definition}
+\begin{remark}    
+Dieser Fluss muss nicht eindeutig bestimmt sein. %TODO Bild als Beweis
+\end{remark}
+
 \subsection{Restnetzwerke}
 Restnetzwerke sind ein Konstrukt, das es uns erlauben wird effizient Kanten zu finden, auf denen der Fluss noch erhöht werden kann.
-Restnetzwerke sind ebenfalls gerichtete Graphen. Sie existieren jedoch nicht für sich, sondern werden durch den Fluss in einem Restnetzwerk induziert.
-
+Restnetzwerke sind ebenfalls gerichtete Graphen. 
+Sie existieren jedoch nicht für sich, sondern werden durch den Fluss in einem Flussnetzwerk induziert.
+\medbreak
 Sei $G=(V,E)$ ein Flussnetzwerk und $f$ ein Fluss in $G$.
 Die Restkapazität einer Kante ist definiert als:
 \begin{equation}\label{residual_capacity}
@@ -167,11 +180,66 @@ Daraus können wir die Menge der Restkanten definieren:
 \begin{equation}\label{residual_edges}
     E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}
 \end{equation}
-Dann ist das durch $f$ induzierte Restnetzwerk $G_f=(V,E_f)$
+Dann ist das durch $f$ induzierte Restnetzwerk $G_f=(V,E_f)$.
+Abbildung \ref{fig:residual_network} zeigt ein Beispiel dafür.
+\bigbreak
+Es ist wichtig zu verstehen, dass Restnetzwerke keine Flussnetzwerke sind, denn sie dürfen entgegengerichtete Kantenpaare enthalten.
+Das hatten wir für Flussnetzwerke verboten.
+Fließt entlang einer Kante $(u,v)$ in einem Flussnetzwerk $G$ ein Fluss $f$ mit $0 < f(u,v) < c(u,v)$, so gibt es im Restnetzwerk $G_f$ wegen \eqref{residual_capacity} zwei Kanten zwischen diesen Knoten.
+Dabei stellt $c_f(u,v)$ diejenige Menge an Fluss dar, die noch über die Kante geschickt werden kann, ohne die Kapazitätsbeschränkung zu verletzen.
+Dahingegen ist $c_f(v,u)$ die Menge, um die der Fluss auf $(u,v)$ reduziert werden kann.
+Solche Reduzierungen des Flusses können lokal nötig sein, um den Fluss global zu erhöhen.
+\bigbreak
+Ganz analog zu Fluss in Flussnetzwerken können wir auch Fluss in Restnetzwerken definieren.
+Ein Fluss in einem Restnetzwerk muss ebenfalls den Anforderungen \eqref{only_on_edges} - \eqref{flow_continuation} genügen.
 
-Es ist wichtig zu verstehen, dass Restnetzwerke keine Flussnetzwerke sind.
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{.475\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \Vertex[label=$s$]{s}
+            \Vertex[label=$v_1$, x=2, y=2]{1}
+            \Vertex[label=$v_2$, x=2, y=-2]{2}
+            \Vertex[label=$t$, x=4, y=0]{t}
+            \Edge[Direct, label=3/3](s)(1)
+            \Edge[Direct, label=2/3](s)(2)
+            \Edge[Direct, label=1](2)(1)
+            \Edge[Direct, label=3/7](1)(t)
+            \Edge[Direct, label=2/2](2)(t)
+        \end{tikzpicture}
+        \caption{Fluss $f$ in einem Flussnetzwerk $G = (V,E)$}
+        \label{fig:residual_network.1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{.475\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \Vertex[label=$s$]{s}
+            \Vertex[label=$v_1$, x=2, y=2]{1}
+            \Vertex[label=$v_2$, x=2, y=-2]{2}
+            \Vertex[label=$t$, x=4, y=0]{t}
+            \Edge[Direct, label=3](1)(s)
+            \Edge[Direct, label=1, bend=15](s)(2)
+            \Edge[Direct, label=2, bend=15](2)(s)
+            \Edge[Direct, label=1](2)(1)
+            \Edge[Direct, label=4, bend=15](1)(t)
+            \Edge[Direct, label=3, bend=15](t)(1)
+            \Edge[Direct, label=2](t)(2)
+        \end{tikzpicture}
+        \caption{durch $f$ induziertes Restnetzwerk $G_f = (V,E_f)$}
+        \label{fig:residual_network.2}
+    \end{subfigure}
+    \caption{Induktion eines Restnetzwerkes}
+    \label{fig:residual_network}
+\end{figure}
+
 \section{\ff -Algorithmen}
 Zunächst soll die Klasse der \ff -Algorithmen vorgestellt werden.
+Der Basisalgorithmus wurde von 
+Wir sprechen hier von einer Algorithmenklasse, weil die hier beschriebenen Ideen in vielen leicht abgewandelten Algorithmen Verwendung finden.
+Diese unterschiedlichen Implementationen ermöglichen unterschiedliche Laufzeiten, weswegen hier vor allem auf den 
+\subsection{Erweiterungspfade}
 
 \section{\pr -Algorithmen}
 
