@@ -9,11 +9,11 @@
 %PACKAGES
 \usepackage[utf8]{inputenc}
 \usepackage[german]{babel}
+\usepackage{csquotes}
 \usepackage[T1]{fontenc}
 \usepackage{mathtools}
 \usepackage{amsmath}
 \usepackage{amsfonts}
-\usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{microtype}
 \usepackage{algorithm}
@@ -28,17 +28,19 @@
 \newtheorem*{definition}{Definition}
 \theoremstyle{remark}
 \newtheorem*{remark}{Anmerkung}
+%
+\setquotestyle[quotes]{german}
 
 %GRAPHING
 \usepackage{tikz-network}
 \usepackage{caption}
 \usepackage{subcaption}
 
-%BIBTEX
-%TODO check for better bibliography package
-\usepackage[numbers,square]{natbib}
-\usepackage{url}
+%BIBLATEX
+\usepackage[style=alphabetic]{biblatex}
+\addbibresource{../../references.bib}
 %smaller URLs
+\usepackage{url}
 \renewcommand{\UrlFont}{\small\tt}
 
 %ALIAS
@@ -47,12 +49,12 @@
 
 \begin{document}
 \maketitle
-\nocite{Cormen09}
+\nocite{*}
 
 \tableofcontents
 
 \begin{abstract}
-In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms \grqq{} \citep{Cormen09} gegeben werden. 
+In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms\grqq{} \parencite{Cormen09} gegeben werden. 
 Dabei soll insbesondere auf den \pr -Algorithmus eingegangen und ein Vergleich zum \ff -Algorithmus gezogen werden.
 \medbreak
 Die Fragestellung nach dem maximalen Fluss ist ein Problem aus der Graphentheorie, das
@@ -77,7 +79,7 @@ Außerdem fordern wir:
 \end{equation}
 Wir verbieten also entgegengerichtete Kantenpaare.
 Darüber hinaus darf es in einem Flussnetzwerk auch keine reflexiven Kanten -- also Kanten mit gleichem Start- und Zielknoten -- geben.
-Statt zu zeigen, dass dies keine echten Einschränkungen sind, sei hier auf \cite{Cormen09} verwiesen.
+Statt zu zeigen, dass dies keine echten Einschränkungen sind, sei hier auf \cite[][S. 724 f.]{Cormen09} verwiesen.
 \medbreak
 Jedes Flussnetzwerk enthält zwei besondere Knoten: Eine Quelle $s$ und eine Senke $t$.
 Der Einfachheit halber liege jeder Knoten $v \in V$ auf einem Pfad von $s$ nach $t$.\\
@@ -192,6 +194,7 @@ Solche Reduzierungen des Flusses können lokal nötig sein, um den Fluss global 
 \bigbreak
 Ganz analog zu Fluss in Flussnetzwerken können wir auch Fluss in Restnetzwerken definieren.
 Ein Fluss in einem Restnetzwerk muss ebenfalls den Anforderungen \eqref{only_on_edges} - \eqref{flow_continuation} genügen.
+Auch der Wert $\lvert f'\rvert$ eines Flusses $f'$ in einem Restnetzwerk ist analog zu \eqref{flow_value} definiert.
 
 \begin{figure}
     \centering
@@ -234,16 +237,54 @@ Ein Fluss in einem Restnetzwerk muss ebenfalls den Anforderungen \eqref{only_on_
     \label{fig:residual_network}
 \end{figure}
 
+\subsection{Erhöhung eines Flusses}
+Sei $f$ ein Fluss im Flussnetzwerk $G = (V,E)$ und $f'$ ein Fluss in $G_f$.
+Für die Erhöhung von $f$ um $f'$ schreiben wir $f \uparrow f'$ und definieren:
+\begin{equation}
+    (f \uparrow f')(u,v)=
+    \begin{cases}
+    f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
+    0 & \text{sonst}
+    \end{cases}
+\end{equation}
+Diese Definition entspricht zunächst nur einer einfachen Intuition.
+\textquote[{\cite[S. 730]{Cormen09}}]{Wir erhöhen den Fluss auf $(u, v)$ um $f'(u, v)$ und verringern ihn um $f'(v,u)$, da das Zurückfließenlassen eines Flusses auf einer entgegengerichteten Kante äquivalent dazu ist, den Fluss in dem ursprünglichen Netzwerk zu verringern.}
+\medbreak
+Die so erhaltene Funktion $f\uparrow f'$ erfüllt die Eigenschaften \eqref{only_on_edges} - \eqref{flow_continuation} -- ist also wieder ein Fluss -- und hat den Wert:
+\begin{equation}\label{flow_incr}
+    \lvert f\uparrow f' \rvert = \lvert f \rvert + \lvert f'\rvert
+\end{equation}
+Die Beweise für diese wichtigen Erkenntnisse würden den Rahmen dieser Zusammenfassung sprengen, sie sind jedoch sehr sehenswert.
+Es sei daher auf \cite[][S. 730-732]{Cormen09} verwiesen.
+
+
 \section{\ff -Algorithmen}
 Zunächst soll die Klasse der \ff -Algorithmen vorgestellt werden.
-Der Basisalgorithmus wurde von 
+Der Basisalgorithmus wurde von L. R. Ford Jr. und D. R. Fulkerson im Jahr 1956 vorgestellt.
 Wir sprechen hier von einer Algorithmenklasse, weil die hier beschriebenen Ideen in vielen leicht abgewandelten Algorithmen Verwendung finden.
-Diese unterschiedlichen Implementationen ermöglichen unterschiedliche Laufzeiten, weswegen hier vor allem auf den 
-\subsection{Erweiterungspfade}
+Diese unterschiedlichen Implementationsmöglichkeiten ergeben unterschiedliche Laufzeiten.
+In diesem Abschnitt soll der Basisalgorithmus von \ff beschrieben und eine Verbesserung vorgestellt werden.
 
+\subsection{Erweiterungspfade}
+Die \ff -Algorithmen verwenden Pfade von $s$ nach $t$ im Restnetzwerk -- sogenannte Erweiterungspfade.
+Entlang dieser Pfade kann dann ein Fluss definiert werden, um den der Fluss im Flussnetzwerk erhöht wird.
+\medbreak
+Sei also $f$ ein Fluss im Flussnetzwerk $G$.
+Mittels eines geeigneten Algorithmus wird zunächst ein Pfad $p$ von $s$ nach $t$ im Restnetzwerk $G_f$ bestimmt.
+Dann lässt sich die Pfadkapazität wie folgt definieren:
+\begin{equation}
+    c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}
+\end{equation}
+\medbreak
+Und damit auch ein Fluss:
+\begin{equation}
+    f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}
+\end{equation}
+\medbreak
+Wegen \eqref{residual_edges} gilt offensichtlich $\lvert f_p\rvert > 0$.
+Somit erhalten wir einen neuen Fluss $f\uparrow f_p$ mit $\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert$. %TODO reference Flusserhöhung
 \section{\pr -Algorithmen}
 
 \newpage
-\bibliography{../../references}{}
-\bibliographystyle{ieeetr}
+\printbibliography
 \end{document}
