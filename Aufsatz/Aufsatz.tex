@@ -44,7 +44,7 @@
 \renewcommand{\UrlFont}{\small\tt}
 
 %ALIAS
-\newcommand{\ff}{Ford-Fulkerson}
+\newcommand{\ff}{\textsc{Ford-Fulkerson}}
 \newcommand{\pr}{Push/Relabel}
 
 \begin{document}
@@ -263,7 +263,6 @@ Zunächst soll die Klasse der \ff -Algorithmen vorgestellt werden.
 Der Basisalgorithmus wurde von L. R. Ford Jr. und D. R. Fulkerson im Jahr 1956 vorgestellt.
 Wir sprechen hier von einer Algorithmenklasse, weil die hier beschriebenen Ideen in vielen leicht abgewandelten Algorithmen Verwendung finden.
 Diese unterschiedlichen Implementationsmöglichkeiten ergeben unterschiedliche Laufzeiten.
-In diesem Abschnitt soll der Basisalgorithmus von \ff beschrieben und eine Verbesserung vorgestellt werden.
 
 \subsection{Erweiterungspfade}
 Die \ff -Algorithmen verwenden Pfade von $s$ nach $t$ im Restnetzwerk -- sogenannte Erweiterungspfade.
@@ -283,6 +282,57 @@ Und damit auch ein Fluss:
 \medbreak
 Wegen \eqref{residual_edges} gilt offensichtlich $\lvert f_p\rvert > 0$.
 Somit erhalten wir einen neuen Fluss $f\uparrow f_p$ mit $\lvert f\uparrow f_p \rvert = \lvert f \rvert + \lvert f_p\rvert > \lvert f\rvert$. %TODO reference Flusserhöhung
+
+\subsection{\ff -Basisalgorithmus}
+Mit den bisher gewonnenen Kenntnissen ist es uns jetzt möglich den \ff -Basisalgorithmus nachzuvollziehen.
+Als Hinweis zur Schreibweise sei gesagt, dass wir den Fluss auf einer Kante als Eigenschaft dieser Kante auffassen und über den Punktoperator darauf zugreifen.
+\begin{algorithm}[H]
+    \caption{\ff (G,s,t)}
+    \label{alg:ff}
+\begin{algorithmic}[1]
+\For{jede Kante $(u,v) \in G.E$}
+    \State $(u,v).f = 0$
+\EndFor
+\While{es existiert ein Pfad $p$ von $s$ nach $t$ in $G_f$}
+    \State $c_{f}(p) =$ min\{$c_{f}(u,v) \mid (u,v)$ liegt auf $p$\}
+    \For{jede Kante $(u,v)$ von $p$}
+        \If{$(u,v) \in G.E$}
+            \State $(u,v).f = (u,v).f + c_{f}(p)$
+        \Else
+            \State $(v,u).f = (v,u).f - c_{f}(p)$
+        \EndIf
+    \EndFor
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+Zunächst initialisieren wir allen Fluss mit dem Wert $0$.
+Anschließend erhöhen wir den Fluss entlang eines Erweiterungspfades um die Pfadkapazität und fahren so lange fort, wie es noch Erweiterungspfade gibt.
+
+\subsection{Analyse des \ff -Basisalgorithmus}
+Man sieht leicht, dass die so beschriebene Funktion $f$ bei Terminierung tatsächlich ein Fluss ist.
+Schwieriger hingegen ist die Frage, ob $f$ auch ein maximaler Fluss ist.
+Sie lässt sich mithilfe des \textbf{maxflow-mincut-Theorems} beantworten, dessen Beweis den Rahmen dieser Ausarbeitung sprengen würde.
+Kurz zusammengefasst stellt dieses Theorem den Zusammenhang zwischen Flüssen in Flussnetzwerken und Schnitten in Flussnetzwerken her.
+Ein Schnitt ist eine besondere Partitionierung des Flussnetzwerks in zwei Teilmengen, von denen eine die Quelle $s$ und die andere die Senke $t$ enthält.
+Unter anderem besagt das \textbf{maxflow-mincut-Theorem}:
+\begin{equation}
+    \lvert f\rvert\text{ ist maximal} \Leftrightarrow \text{es existiert kein Erweiterungspfad in $G_{f}$}
+\end{equation}
+Da wir für die Kantenkapazitäten im Flussnetzwerk natürliche Zahlen annehmen, wächst der Fluss in jeder Iteration des Algorithmus um mindestens eine Einheit.
+offensichtlich muss ein maximaler Fluss auch einen Wert aus $\mathbb{N}$ haben und somit terminiert der Algorithmus nach endlich vielen Schritten mit einem korrekten Ergebnis.
+Auch für Kantenkapazitäten aus $\mathbb{Q}$ sind diese Beobachtungen interessant.
+Für ein solches Flussnetzwerk kann man alle Kapazitäten mit dem Hauptnenner multiplizieren und so das Netzwerk \glqq skalieren\grqq{}.
+Ford und Fulkerson konnten allerdings ein Flussnetzwerk mit Kantenkapazitäten aus $\mathbb{R}$ finden, für welches ihr Algorithmus nicht nur nicht terminiert, sondern der Fluss noch nicht einmal gegen einen maximalen Fluss konvergiert.
+\medbreak
+In Hinblick auf die Laufzeit des Algorithmus ist vor allem relevant, wie wir den Pfad $p$ bestimmen.
+Mit einer geeigneten Datenstruktur und Breitensuche geben \cite{Cormen09} dafür $\mathcal{O}(E)$ an.
+Wir hatten bereits beobachtet, dass wir für ein Flussnetzwerk mit einem maximalen Fluss $f'$ höchstens $\lvert f'\rvert$ Iterationen berechnen müssen.
+Als Gesamtlaufzeit ergibt sich somit $\mathcal{O}(E\cdot\lvert f'\rvert)$
+Dass in diesem Spezialfall die Laufzeit nicht nur von der Größe der Eingabe, sondern auch von der Größe der Ausgabe abhängt, ist ein Nachteil des Basisalgorithmus.
+Er entsteht dadurch, dass die Reihenfolge, in der wir die Erweiterungspfade wählen entscheident ist.
+Wenn wir den Erweiterungspfad nicht beliebig, sondern als einen kürzesten Pfad zwischen $s$ und $t$ wählen, erhalten wir den Edmonds-Karp-Algorithmus.
+Benutzen wir Breitensuche für die Bestimmung eines solchen kürzesten Pfades, so verbessert sich die Laufzeit auf $\mathcal{O}(V\cdot E^2)$.
+
 \section{\pr -Algorithmen}
 
 \newpage
