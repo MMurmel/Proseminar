@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,titlepage,onecolumn,ngerman]{scrartcl}
+\documentclass[12pt,a4paper,titlepage,onecolumn,ngerman,bibliography=totocnumbered]{scrartcl}
 
 %META-INFORMATION
 \author{Maximilian Moeller}
@@ -61,7 +61,6 @@ Die Fragestellung nach dem maximalen Fluss ist ein Problem aus der Graphentheori
 in vielen praktischen Fällen Anwendung findet. 
 Überall dort, wo die Menge einer zwischen verschiedenen Punkten transportierten Ware maximiert werden soll, kann auf die hier entwickelten Lösungen zurückgegriffen werden. 
 Als Beispiele seien die Informationsübertragung in Computernetzwerken oder der Flüssigkeitstransport in Rohrleitungssystemen genannt. 
-Besonders an letzterem lassen sich die Intuitionen hinter den Formeln gut erklären. Solche Erklärungen werden hier durch \textit{kursiven Text} angezeigt.
 \end{abstract}
 
 \section{Grundlagen}
@@ -149,8 +148,8 @@ Der Wert $\lvert f \rvert$ eines Flusses $f$ ist definiert als:
 \begin{equation}\label{flow_value}
 \lvert f \rvert := \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s)
 \end{equation}
-Er entspricht also der Menge an Fluss, die \glqq netto\grqq{} aus der Quelle $s$ herausfließt.
-Wegen \eqref{flow_continuation} also auch der Menge an Fluss, die (\glqq netto\grqq{}) in die Senke $t$ hineinfließt.
+Er entspricht also der Menge an Fluss, die aus der Quelle $s$ herausfließt.
+Wegen \eqref{flow_continuation} also auch der Menge an Fluss, die in die Senke $t$ hineinfließt.
 Häufig enthält ein Flussnetzwerk keine eingehenden Kanten zur Quelle, womit sich die Gleichung zu $\lvert f \rvert := \sum_{u\in V} f(s,u)$ vereinfacht.
 Wir können nun das maximaler-Fluss-Problem formal definieren:
 
@@ -259,14 +258,14 @@ Es sei daher auf \cite[][S. 730-732]{Cormen09} verwiesen.
 
 
 \section{\ff -Algorithmen}
-Zunächst soll die Klasse der \ff -Algorithmen vorgestellt werden.
+Zunächst soll die Klasse der \ff -Algorithmen erläutert werden.
 Der Basisalgorithmus wurde von L. R. Ford Jr. und D. R. Fulkerson im Jahr 1956 vorgestellt.
 Wir sprechen hier von einer Algorithmenklasse, weil die hier beschriebenen Ideen in vielen leicht abgewandelten Algorithmen Verwendung finden.
 Diese unterschiedlichen Implementationsmöglichkeiten ergeben unterschiedliche Laufzeiten.
 
 \subsection{Erweiterungspfade}
 Die \ff -Algorithmen verwenden Pfade von $s$ nach $t$ im Restnetzwerk -- sogenannte Erweiterungspfade.
-Entlang dieser Pfade kann dann ein Fluss definiert werden, um den der Fluss im Flussnetzwerk erhöht wird.
+Entlang dieser Pfade kann dann ein Fluss definiert werden, um den der ursprüngliche Fluss im Flussnetzwerk erhöht wird.
 \medbreak
 Sei also $f$ ein Fluss im Flussnetzwerk $G$.
 Mittels eines geeigneten Algorithmus wird zunächst ein Pfad $p$ von $s$ nach $t$ im Restnetzwerk $G_f$ bestimmt.
@@ -311,7 +310,7 @@ Anschließend erhöhen wir den Fluss entlang eines Erweiterungspfades um die Pfa
 \subsection{Analyse des \ff -Basisalgorithmus}
 Man sieht leicht, dass die so beschriebene Funktion $f$ bei Terminierung tatsächlich ein Fluss ist.
 Schwieriger hingegen ist die Frage, ob $f$ auch ein maximaler Fluss ist.
-Sie lässt sich mithilfe des \textbf{maxflow-mincut-Theorems} beantworten, dessen Beweis den Rahmen dieser Ausarbeitung sprengen würde.
+Sie lässt sich mithilfe des \textbf{maxflow-mincut-Theorems} beantworten, dessen Beweis wir hier auslassen.
 Kurz zusammengefasst stellt dieses Theorem den Zusammenhang zwischen Flüssen in Flussnetzwerken und Schnitten in Flussnetzwerken her.
 Ein Schnitt ist eine besondere Partitionierung des Flussnetzwerks in zwei Teilmengen, von denen eine die Quelle $s$ und die andere die Senke $t$ enthält.
 Unter anderem besagt das \textbf{maxflow-mincut-Theorem}:
@@ -319,10 +318,12 @@ Unter anderem besagt das \textbf{maxflow-mincut-Theorem}:
     \lvert f\rvert\text{ ist maximal} \Leftrightarrow \text{es existiert kein Erweiterungspfad in $G_{f}$}
 \end{equation}
 Da wir für die Kantenkapazitäten im Flussnetzwerk natürliche Zahlen annehmen, wächst der Fluss in jeder Iteration des Algorithmus um mindestens eine Einheit.
-offensichtlich muss ein maximaler Fluss auch einen Wert aus $\mathbb{N}$ haben und somit terminiert der Algorithmus nach endlich vielen Schritten mit einem korrekten Ergebnis.
+Offensichtlich muss ein maximaler Fluss auch einen Wert aus $\mathbb{N}$ haben und somit terminiert der Algorithmus nach endlich vielen Schritten mit einem korrekten Ergebnis.
 Auch für Kantenkapazitäten aus $\mathbb{Q}$ sind diese Beobachtungen interessant.
 Für ein solches Flussnetzwerk kann man alle Kapazitäten mit dem Hauptnenner multiplizieren und so das Netzwerk \glqq skalieren\grqq{}.
-Ford und Fulkerson konnten allerdings ein Flussnetzwerk mit Kantenkapazitäten aus $\mathbb{R}$ finden, für welches ihr Algorithmus nicht nur nicht terminiert, sondern der Fluss noch nicht einmal gegen einen maximalen Fluss konvergiert.
+Dann führt man den Algorithmus auf dem skalierten Flussnetzwerk aus und skaliert das Ergebnis zurück, indem man es durch den Hauptnenner dividiert.
+Dieses Vorgehen lässt sich jedoch nicht auf jeden Zahlenbereich ausweiten.
+Ford und Fulkerson konnten ein Flussnetzwerk mit Kantenkapazitäten aus $\mathbb{R}$ finden, für welches ihr Algorithmus nicht nur nicht terminiert, sondern der Fluss noch nicht einmal gegen einen maximalen Fluss konvergiert.
 \medbreak
 In Hinblick auf die Laufzeit des Algorithmus ist vor allem relevant, wie wir den Pfad $p$ bestimmen.
 Mit einer geeigneten Datenstruktur und Breitensuche geben \cite{Cormen09} dafür $\mathcal{O}(E)$ an.
@@ -334,7 +335,97 @@ Wenn wir den Erweiterungspfad nicht beliebig, sondern als einen kürzesten Pfad 
 Benutzen wir Breitensuche für die Bestimmung eines solchen kürzesten Pfades, so verbessert sich die Laufzeit auf $\mathcal{O}(V\cdot E^2)$.
 
 \section{\pr -Algorithmen}
+Während die \ff -Algorithmen global nach einem Erweiterungspfad suchen, arbeiten \pr -Algorithmen wesentlich lokaler.
+Sie betrachten stets nur einen Knoten und seine direkte Umgebung gleichzeitig.
+Auch bei den \pr -Algorithmen gibt es mehrere Implementationsmöglichkeiten, die verschiedene Laufzeiten mit sich bringen.
+Wir werden hier ausschließlich den Basisalgorithmus betrachten.
+Zunächst wird dabei eine Datenstruktur initialisiert. 
+Dann werden so lange Push- oder Relabel-Operationen ausgeführt, bis keine ausführbare Operation verbleibt.
 
+\subsection{Grundlagen}
+\pr -Algorithmen verletzen zeitweise die Flusserhaltung \eqref{flow_continuation}.
+Statt in jedem Iterationsschritt einen gültigen Fluss zu erzeugen, verwenden sie Vorflüsse.
+Ein Vorfluss ist ein Fluss, der lediglich eine schwächere Form der Flusserhaltung erfüllen muss:
+\begin{equation}\label{eq:preflow}
+    \forall u\in V\setminus\{s\}:\sum_{v\in V}f(v,u)\geq\sum_{v\in V}f(u,v)
+\end{equation}
+In einen Knoten $u$ kann also mehr Fluss hineinfließen, als aus ihm hinaus fließt.
+Die Differenz dieser Mengen wird der Flussüberschuss $e(u)$ genannt:
+\begin{equation}\label{eq:flow_excess}
+    e(u) = \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v)
+\end{equation}
+In den Knoten kann also ein beliebig großer Flussüberschuss gespeichert werden.
+Ist $e(u)>0$, so sagen wir $u$ ist überflutet.
+Wir werden sehen, wie der Flussüberschuss im Laufe des Algorithmus immer weiter in Richtung Senke geschoben (gepusht) wird.
+Sobald die maximale Menge an Fluss von $s$ nach $t$ fließt, muss der Algorithmus dann nur noch den verbliebenen Flussüberschuss in allen Knoten wieder zurück zur Quelle schicken.
+\medbreak
+Neben dem Flussüberschuss gibt es noch eine weitere Größe.
+Die Höhe $h(u)$ eines Knotens $u$ bestimmt, welche Operationen wir wie ausführen können.
+Wir fixieren folgende Höhen: $h(s) = \lvert V\rvert$ und $h(t) = 0$.
+Alle anderen Knoten beginnen mit Höhe $0$, steigen jedoch im Laufe des Algorithmus an.
+Flussüberschuss wird ausschließlich von Knoten größerer Höhe zu Knoten geringerer Höhe gepusht.
+Das schließt jedoch nicht aus, dass nicht auch von einem Knoten geringerer Höhe Fluss zu einem Knoten größerer Höhe fließt.
+Sei $G=(V,E)$ ein Flussnetzwerk und $f$ ein Vorfluss in $G$.
+Wir fordern weiterhin von der Höhenfunktion $h:V\to\mathbb{N}$:
+\begin{equation}\label{eq:height_function}
+    \forall (u,v)\in E_f: h(u)\leq h(v) + 1
+\end{equation}
+Wir beobachten für später auch die Kontraposition:
+\begin{equation}\label{eq:contraposition_height}
+    \forall u,v\in V: h(u) > h(v) + 1\Rightarrow (u,v) \not\in E_f
+\end{equation}
+
+\subsection{Die Push-Operation}
+Wir werden sowohl für die Push-, als auch später für die Relabel-Operation Voraussetzungen festlegen, die erfüllt sein müssen um diese Operationen anwenden zu können.
+Die Push-Operation wird verwendet, um Flussüberschuss von einem Knoten zu einem anderen zu drücken.
+Wir können \textsc{Push}$(u,v)$ anwenden, wenn $u$ überflutet ist, die Restkapazität $c_f(u,v) > 0$ ist und $h(u) = h(v) + 1$ gilt.
+Die ersten beiden Bedingungen sind trivial. 
+Wie sollten wir Fluss von $u$ nach $v$ drücken, wenn $u$ nicht überflutet wäre oder die Kante $(u,v)$ bereits gesättigt wäre.
+Mit der dritten Bedingung legen wir fest, dass wir Fluss stets nur über eine Kante pushen, die zu einem Knoten mit einer um eine Einheit niedrigeren Höhe führt.
+Dies ergibt sich direkt aus \eqref{eq:contraposition_height}, wo wir gesehen haben, dass es keine Kanten im Restnetzwerk zu einem Knoten geben kann, dessen Höhen um mehr als eine Einheit niedriger ist.
+Solange es sich bei $h$ also tatsächlich um eine Höhenfunktion handelt, wäre ein Push über mehr als eine Höheneinheit also unzulässig.
+\begin{algorithm}[H]
+    \caption{\textsc{Push}$(u,v)$}
+    \label{alg:push}
+\begin{algorithmic}[1]
+\State{\textbf{// Anwendbar wenn:} $u.e > 0$, $c_{f}(u,v)>0$, und $u.h=v.h + 1$.}
+\State{\textbf{// Aktion:} Drücke $\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$ Flusseinheiten von $u$ nach $v$.}
+\State{}
+\State{$\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$}
+\If{$(u,v)\in E$}
+    \State{$(u,v).f = (u,v).f +\Delta_{f}(u,v)$}
+\Else
+    \State{$(v,u).f = (v,u).f -\Delta_{f}(u,v)$}
+\EndIf
+\State{$u.e = u.e - \Delta_{f}(u,v)$}
+\State{$v.e = v.e + \Delta_{f}(u,v)$}
+\end{algorithmic}
+\end{algorithm}
+Wir wählen $\Delta_{f}(u,v)$ als das Minimum aus Flussüberschuss in $u$ und verbliebener Restkapazität $c_f(u,v)$.
+Danach verändern wir den Vorfluss auf der gewählten Kante und passen die Überschüsse an.
+
+\subsection{Die Relabel-Operation}
+Wir haben bereits gesehen, wie wir Flussüberschuss von einem Knoten zum nächsten bewegen können.
+Es kann allerdings vorkommen, dass ein Knoten überflutet ist und keine gültige Push-Operation für ihn existiert.
+In diesem Fall wenden wir die Relabel-Operation auf den Knoten an, die seine Höhe wachsen lässt -- wir markieren $u$ um.
+Bedingungen für die Ausführung von \textsc{Relabel}$(u)$ sind also, dass $e(u) > 0$ ist und $\forall (u,v)\in E_f: h(u) < h(v)$ gilt.
+Ist nämlich die Höhe aller Knoten, zu denen Restkanten führen höher als die von $u$, so können wir den Flussüberschuss in $u$ durch keine Push-Operation verringern.
+\begin{algorithm}[H]
+    \caption{\textsc{Relabel}$(u)$}
+    \label{alg:relabel}
+\begin{algorithmic}[1]
+\State{\textbf{// Anwendbar wenn:} $u.e > 0$, und $u.h \leq v.h$ für alle $v \in V$ mit $(u,v)\in E_f$.}
+\State{\textbf{// Aktion:} setze u.h auf einen höheren Wert.}
+\State{}
+\State{$u.h = 1 +$min\{$v.h \mid (u,v)\in E_f$\}}
+\end{algorithmic}
+\end{algorithm}
+Wegen $e(u) = \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v) > 0$ muss es mindestens einen Knoten $v$ geben mit $f(v,u) > 0$.
+Daraus folgt direkt, dass $c_f(u,v) > 0$ und damit $(u,v)\in E_f$.
+\textquote[{\cite[S. 753]{Cormen09}}]{Die Operation \textsc{Relabel}$(u)$ weist $u$ also die größte Höhe zu, die nach den Beschränkungen der Höhenfunktionen erlaubt ist.}
+Da wir die Höhenfunktion nur in der Relabel-Operation verändern, können wir uns also sicher sein, niemals \eqref{eq:height_function} zu verletzen.
+
+\subsection{\pr -Algorithmus}
 \newpage
 \printbibliography
 \end{document}
