@@ -56,6 +56,7 @@
 \begin{abstract}
 In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms\grqq{} \parencite{Cormen09} gegeben werden. 
 Dabei soll insbesondere auf den \pr -Algorithmus eingegangen und ein Vergleich zum \ff -Algorithmus gezogen werden.
+Im Vordergrund wird nicht das Nachvollziehen von Beweisen, sondern vielmehr der Überblick über das Themengebiet stehen.
 \medbreak
 Die Fragestellung nach dem maximalen Fluss ist ein Problem aus der Graphentheorie, das
 in vielen praktischen Fällen Anwendung findet. 
@@ -465,6 +466,31 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
+
+\subsection{Analyse des generischen \pr -Algorithmus}
+Die Korrektheit des \pr -Algorithmus lässt sich über einige Beobachtungen zur Höhenfunktion, sowie eine geeignete Schleifeninvariante beweisen.
+Die Terminiertheit erhält man aus Abschätzungen zu der Anzahl an Push- und Relabel-Operationen.
+Daraus ergibt sich auch eine Schranke für die maximale Anzahl an Operationen und wir erhalten eine Laufzeit des generischen \pr -Algorithmus von insgesamt $\mathcal{O}(V^2 \cdot E)$.
+Diese Lösungsstrategie ist also schneller als die der \ff -Algorithmen, lässt sich aber noch weiter verbessern.
+Auch hier ist die Reihenfolge, in der wir die Operationen ausführen bestimmend für die Laufzeit.
+Eine Erweiterung des generischen Algorithmus ist der Relabel-to-Front-Algorithmus.
+Er verwaltet neben Höhenfunktion und Flussüberschüssen auch noch eine Liste der Knoten des Netzwerkes.
+Beginnend am Anfang der Liste wird nach einem überfluteten Knoten $u$ gesucht.
+Der Algorithmus versucht dann auf diesen so lange Push- oder Relabel-Operationen anzuwenden, bis $u$ nicht mehr überflutet ist.
+Sobald ein Knoten ummakiert wird, wird er außerdem an den Anfang der Liste verschoben.
+Daher kommt auch der Name des Relabel-to-Front-Algorithmus.
+Er erreicht eine Laufzeit von $\mathcal{O}(V^3)$, was mindestens genau so gut ist, wie die generische Implementierung.
+
+\section{Zusammenfassung}
+Wir haben gesehen, mit welch unterschiedlichen Strategien sich das maximaler-Fluss-Problem lösen lässt.
+Während die \ff -Algorithmen durch einen recht globalen Lösungsansatz Erweiterungspfade identifizieren, arbeiten \pr -Algorithmen wesentlich lokaler.
+Beide Algorithmen lassen diverse Implementierungen zu, die sich in verschiedenen Laufzeiten wiederspiegeln.
+Wir haben zu jeder Algorithmenfamilie eine Verbesserung angeschnitten, deren Laufzeiten besser waren, als die ihrer generischen Pendants.
+Einige der derzeit schnellsten bekannten Algorithmen entstammen der Klasse der \pr -Algorithmen, es gibt jedoch noch schnellere Algorithmen, die sich keiner der beiden hier besprochenen Klassen zuordnen lassen (z.B. der Algorithmus von Goldberg und Rao)
+\medbreak
+Besonders über den Zusammenhang mit den Schnitten, den wir nur kurz besprochen haben, erhalten wir interessante Anwendungsfälle.
+Das automatisierte Unterscheiden zwischen Vordergrund und Hintergrund in einer Bildbearbeitungssoftware lässt sich beispielsweise auf ein maximaler-Fluss-Problem zurückführen.
+Auch zum effizienten Errechnen maximaler bipartiter Matchings können diese Algorithem benutzt werden, zum Beispiel bei der bestmöglichen Zuteilung von Ressourcen zu Verbrauchern.
 \newpage
 \printbibliography
 \end{document}
