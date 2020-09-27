@@ -30,6 +30,8 @@
 \newtheorem*{remark}{Anmerkung}
 %
 \setquotestyle[quotes]{german}
+%lemma environment
+\newtheorem{lemma}{Lemma}
 
 %GRAPHING
 \usepackage{tikz-network}
@@ -49,8 +51,6 @@
 
 \begin{document}
 \maketitle
-\nocite{*}
-
 \tableofcontents
 
 \begin{abstract}
@@ -425,7 +425,46 @@ Daraus folgt direkt, dass $c_f(u,v) > 0$ und damit $(u,v)\in E_f$.
 \textquote[{\cite[S. 753]{Cormen09}}]{Die Operation \textsc{Relabel}$(u)$ weist $u$ also die größte Höhe zu, die nach den Beschränkungen der Höhenfunktionen erlaubt ist.}
 Da wir die Höhenfunktion nur in der Relabel-Operation verändern, können wir uns also sicher sein, niemals \eqref{eq:height_function} zu verletzen.
 
-\subsection{\pr -Algorithmus}
+\subsection{Der generische \pr -Algorithmus}
+Für den generischen \pr -Algorithmus benötigen wir nun nur noch einen initialen Vorfluss.
+Diesen erzeugen wir wie folgt:
+\begin{algorithm}[H]
+    \caption{Initialize-Preflow(G,s)}
+    \label{alg:initialize_preflow}
+\begin{algorithmic}[1]
+\For{jeden Knoten $v \in G.V$}
+    \State $v.h = 0$
+    \State $v.e = 0$
+\EndFor
+\For{jede Kante $(u,v)\in G.E$}
+    \State $(u,v).f = 0$
+\EndFor
+\State{$s.h = \lvert G.V\rvert$}
+\For{jeden Knoten $v$ mit $(s,v)\in G.E$}
+    \State $(s,v).f = c(s,v)$
+    \State $v.e = c(s,v)$
+    \State $s.e = s.e - c(s,v)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+Wir schicken also von der Quelle aus einen Fluss zu allen angrenzenden Knoten.
+Dabei wählen wir die Menge an Fluss genau gleich zur jeweiligen Kapazität der Kante.
+Man sieht leicht, dass $f$ dann ein Vorfluss ist.
+Diejenigen Kanten $(u,v)$, für die $h(u) > h(v) + 1$ ist, sind genau die Kanten mit $u = s$.
+Da diese Kanten bereits bis zu ihrer Kapazität mit Fluss gefüllt sind, kommen sie im Restnetzwerk nicht vor.
+Die Eigenschaft $h$ beschreibt also eine Höhenfunktion.
+\medbreak
+Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
+\begin{algorithm}[H]
+    \caption{Generic-\pr}
+    \label{alg:generic_pr}
+\begin{algorithmic}[1]
+\State{Initialize-Preflow(G,s)}
+\While{es existiert eine ausführbare Push- oder Relabel-Operation}
+    \State{wähle eine ausführbare Push- oder Relabel-Operation und führe sie aus}
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
 \newpage
 \printbibliography
 \end{document}
