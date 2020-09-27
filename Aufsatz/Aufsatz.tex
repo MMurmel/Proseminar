@@ -18,6 +18,7 @@
 \usepackage{microtype}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{float}
 
 %OPTIONS
 %no "then" or "do" in algorithm
@@ -54,14 +55,14 @@
 \tableofcontents
 
 \begin{abstract}
-In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms\grqq{} \parencite{Cormen09} gegeben werden. 
-Dabei soll insbesondere auf den \pr -Algorithmus eingegangen und ein Vergleich zum \ff -Algorithmus gezogen werden.
-Im Vordergrund wird nicht das Nachvollziehen von Beweisen, sondern vielmehr der Überblick über das Themengebiet stehen.
-\medbreak
-Die Fragestellung nach dem maximalen Fluss ist ein Problem aus der Graphentheorie, das
-in vielen praktischen Fällen Anwendung findet. 
-Überall dort, wo die Menge einer zwischen verschiedenen Punkten transportierten Ware maximiert werden soll, kann auf die hier entwickelten Lösungen zurückgegriffen werden. 
-Als Beispiele seien die Informationsübertragung in Computernetzwerken oder der Flüssigkeitstransport in Rohrleitungssystemen genannt. 
+	In dieser Ausarbeitung soll eine Zusammenfassung des Kapitels 26 \glqq Maximaler Fluss\grqq{} aus dem Buch \glqq Introduction to Algorithms\grqq{} \parencite{Cormen09} gegeben werden.
+	Dabei soll insbesondere auf den \pr -Algorithmus eingegangen und ein Vergleich zum \ff -Algorithmus gezogen werden.
+	Im Vordergrund wird nicht das Nachvollziehen von Beweisen, sondern vielmehr der Überblick über das Themengebiet stehen.
+	\medbreak
+	Die Fragestellung nach dem maximalen Fluss ist ein Problem aus der Graphentheorie, das
+	in vielen praktischen Fällen Anwendung findet.
+	Überall dort, wo die Menge einer zwischen verschiedenen Punkten transportierten Ware maximiert werden soll, kann auf die hier entwickelten Lösungen zurückgegriffen werden.
+	Als Beispiele seien die Informationsübertragung in Computernetzwerken oder der Flüssigkeitstransport in Rohrleitungssystemen genannt.
 \end{abstract}
 
 \section{Grundlagen}
@@ -75,7 +76,7 @@ Im Folgenden soll deswegen $\mathfrak{B} = \mathbb{N}$ betrachtet werden.
 Für $(u,v) \notin E$ sei $c(u,v) = 0$.
 Außerdem fordern wir:
 \begin{equation} \label{no_parallel}
-\forall (u,v)\in V\times V: (u,v)\in E \Rightarrow (v,u)\notin E\\
+	\forall (u,v)\in V\times V: (u,v)\in E \Rightarrow (v,u)\notin E\\
 \end{equation}
 Wir verbieten also entgegengerichtete Kantenpaare.
 Darüber hinaus darf es in einem Flussnetzwerk auch keine reflexiven Kanten -- also Kanten mit gleichem Start- und Zielknoten -- geben.
@@ -89,65 +90,65 @@ Abbildung \ref{fig:flow_network.1} zeigt ein Beispiel für ein Flussnetzwerk.
 Ein Fluss $f$ in einem Flussnetzwerk $G=(V,E)$ ist eine Funktion $f: V \times V \to \mathfrak{B}$.
 Dabei muss ein Fluss drei besondere Bedingungen erfüllen:
 \begin{align}
-&\forall u,v\in V\colon (u,v)\notin E\Rightarrow f(u,v) = 0 \label{only_on_edges} \\
-&\forall u,v\in V\colon 0\leq f(u,v)\leq c(u,v) \label{limited_by_capacity} \\
-&\forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v) \label{flow_continuation}
+	 & \forall u,v\in V\colon (u,v)\notin E\Rightarrow f(u,v) = 0 \label{only_on_edges}                          \\
+	 & \forall u,v\in V\colon 0\leq f(u,v)\leq c(u,v) \label{limited_by_capacity}                                \\
+	 & \forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v) \label{flow_continuation}
 \end{align}
-Die Eigenschaft \eqref{flow_continuation} trägt den Namen Flusserhaltung. 
+Die Eigenschaft \eqref{flow_continuation} trägt den Namen Flusserhaltung.
 Im Beispiel des Stromflusses entspricht sie der Kirchhoffschen Knotenregel.\\
 Abbildung \ref{fig:flow_network.2} zeigt einen Fluss.
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{.475\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \Vertex[label=$s$]{s}
-            \Vertex[label=$u_1$, x=2, y=1]{1}
-            \Vertex[label=$u_2$, x=2, y=-1]{2}
-            \Vertex[label=$u_3$, x=4, y=1]{3}
-            \Vertex[label=$u_4$, x=4, y=-1]{4}
-            \Vertex[label=$t$, x=6, y=0]{t}
-            \Edge[Direct, label=4](s)(1)
-            \Edge[Direct, label=7](s)(2)
-            \Edge[Direct, label=2](1)(3)
-            \Edge[Direct, label=4](2)(3)
-            \Edge[Direct, label=3](2)(4)
-            \Edge[Direct, label=6](3)(t)
-            \Edge[Direct, label=2](4)(t)
-        \end{tikzpicture}
-        \caption{Ein Flussnetzwerk $G$}
-        \label{fig:flow_network.1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{.475\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \Vertex[label=$s$]{s}
-            \Vertex[label=$u_1$, x=2, y=1]{1}
-            \Vertex[label=$u_2$, x=2, y=-1]{2}
-            \Vertex[label=$u_3$, x=4, y=1]{3}
-            \Vertex[label=$u_4$, x=4, y=-1]{4}
-            \Vertex[label=$t$, x=6, y=0]{t}
-            \Edge[Direct, label=1/4](s)(1)
-            \Edge[Direct, label=2/7](s)(2)
-            \Edge[Direct, label=1/2](1)(3)
-            \Edge[Direct, label=4](2)(3)
-            \Edge[Direct, label=2/3](2)(4)
-            \Edge[Direct, label=1/6](3)(t)
-            \Edge[Direct, label=2/2](4)(t)
-        \end{tikzpicture}
-        \caption{Ein Fluss $f$ in $G$ mit $\lvert f\rvert = 3$}
-        \label{fig:flow_network.2}
-    \end{subfigure}
-    \caption{In der hier verwendeten Darstellung werden Kanten $(u,v)$ mit $f(u,v)/c(u,v)$ beschrifet. Ist $f(u,v) = 0$, so wird nur die Kapazität angegeben.}
-    \label{fig:flow_network}
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{.475\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$u_1$, x=2, y=1]{1}
+			\Vertex[label=$u_2$, x=2, y=-1]{2}
+			\Vertex[label=$u_3$, x=4, y=1]{3}
+			\Vertex[label=$u_4$, x=4, y=-1]{4}
+			\Vertex[label=$t$, x=6, y=0]{t}
+			\Edge[Direct, label=4](s)(1)
+			\Edge[Direct, label=7](s)(2)
+			\Edge[Direct, label=2](1)(3)
+			\Edge[Direct, label=4](2)(3)
+			\Edge[Direct, label=3](2)(4)
+			\Edge[Direct, label=6](3)(t)
+			\Edge[Direct, label=2](4)(t)
+		\end{tikzpicture}
+		\caption{Ein Flussnetzwerk $G$}
+		\label{fig:flow_network.1}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.475\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$u_1$, x=2, y=1]{1}
+			\Vertex[label=$u_2$, x=2, y=-1]{2}
+			\Vertex[label=$u_3$, x=4, y=1]{3}
+			\Vertex[label=$u_4$, x=4, y=-1]{4}
+			\Vertex[label=$t$, x=6, y=0]{t}
+			\Edge[Direct, label=1/4](s)(1)
+			\Edge[Direct, label=2/7](s)(2)
+			\Edge[Direct, label=1/2](1)(3)
+			\Edge[Direct, label=4](2)(3)
+			\Edge[Direct, label=2/3](2)(4)
+			\Edge[Direct, label=1/6](3)(t)
+			\Edge[Direct, label=2/2](4)(t)
+		\end{tikzpicture}
+		\caption{Ein Fluss $f$ in $G$ mit $\lvert f\rvert = 3$}
+		\label{fig:flow_network.2}
+	\end{subfigure}
+	\caption{In der hier verwendeten Darstellung werden Kanten $(u,v)$ mit $f(u,v)/c(u,v)$ beschrifet. Ist $f(u,v) = 0$, so wird nur die Kapazität angegeben.}
+	\label{fig:flow_network}
 \end{figure}
 
 \subsection{Wert eines Flusses}
 Der Wert $\lvert f \rvert$ eines Flusses $f$ ist definiert als:
 \begin{equation}\label{flow_value}
-\lvert f \rvert := \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s)
+	\lvert f \rvert := \sum_{u\in V} f(s,u) - \sum_{u\in V} f(u,s)
 \end{equation}
 Er entspricht also der Menge an Fluss, die aus der Quelle $s$ herausfließt.
 Wegen \eqref{flow_continuation} also auch der Menge an Fluss, die in die Senke $t$ hineinfließt.
@@ -155,32 +156,32 @@ Häufig enthält ein Flussnetzwerk keine eingehenden Kanten zur Quelle, womit si
 Wir können nun das maximaler-Fluss-Problem formal definieren:
 
 \begin{definition}
-Im maximaler-Fluss-Problem ist ein Flussnetzwerk $G$ mit Quelle $s$ und Senke $t$ gegeben.
-Gesucht wird ein Fluss $f$, dessen Wert $\lvert f\rvert$ maximal für dieses Flussnetzwerk ist.
+	Im maximaler-Fluss-Problem ist ein Flussnetzwerk $G$ mit Quelle $s$ und Senke $t$ gegeben.
+	Gesucht wird ein Fluss $f$, dessen Wert $\lvert f\rvert$ maximal für dieses Flussnetzwerk ist.
 \end{definition}
-\begin{remark}    
-Dieser Fluss muss nicht eindeutig bestimmt sein. %TODO Bild als Beweis
+\begin{remark}
+	Dieser Fluss muss nicht eindeutig bestimmt sein. %TODO Bild als Beweis
 \end{remark}
 
 \subsection{Restnetzwerke}
 Restnetzwerke sind ein Konstrukt, das es uns erlauben wird effizient Kanten zu finden, auf denen der Fluss noch erhöht werden kann.
-Restnetzwerke sind ebenfalls gerichtete Graphen. 
+Restnetzwerke sind ebenfalls gerichtete Graphen.
 Sie existieren jedoch nicht für sich, sondern werden durch den Fluss in einem Flussnetzwerk induziert.
 \medbreak
 Sei $G=(V,E)$ ein Flussnetzwerk und $f$ ein Fluss in $G$.
 Die Restkapazität einer Kante ist definiert als:
 \begin{equation}\label{residual_capacity}
-    c_{f}(u,v) = 
-    \begin{cases}
-        c(u,v) - f(u,v) & \text{falls $(u,v)\in E$}\\
-        f(v,u) & \text{falls $(v,u) \in E$}\\
-        0 & \text{sonst}
-    \end{cases}
+	c_{f}(u,v) =
+	\begin{cases}
+		c(u,v) - f(u,v) & \text{falls $(u,v)\in E$}  \\
+		f(v,u)          & \text{falls $(v,u) \in E$} \\
+		0               & \text{sonst}
+	\end{cases}
 \end{equation}
 Wegen \eqref{no_parallel} tritt immer nur genau einer dieser Fälle ein.
 Daraus können wir die Menge der Restkanten definieren:
 \begin{equation}\label{residual_edges}
-    E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}
+	E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}
 \end{equation}
 Dann ist das durch $f$ induzierte Restnetzwerk $G_f=(V,E_f)$.
 Abbildung \ref{fig:residual_network} zeigt ein Beispiel dafür.
@@ -196,67 +197,142 @@ Ganz analog zu Fluss in Flussnetzwerken können wir auch Fluss in Restnetzwerken
 Ein Fluss in einem Restnetzwerk muss ebenfalls den Anforderungen \eqref{only_on_edges} - \eqref{flow_continuation} genügen.
 Auch der Wert $\lvert f'\rvert$ eines Flusses $f'$ in einem Restnetzwerk ist analog zu \eqref{flow_value} definiert.
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{.475\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \Vertex[label=$s$]{s}
-            \Vertex[label=$v_1$, x=2, y=2]{1}
-            \Vertex[label=$v_2$, x=2, y=-2]{2}
-            \Vertex[label=$t$, x=4, y=0]{t}
-            \Edge[Direct, label=3/3](s)(1)
-            \Edge[Direct, label=2/3](s)(2)
-            \Edge[Direct, label=1](2)(1)
-            \Edge[Direct, label=3/7](1)(t)
-            \Edge[Direct, label=2/2](2)(t)
-        \end{tikzpicture}
-        \caption{Fluss $f$ in einem Flussnetzwerk $G = (V,E)$}
-        \label{fig:residual_network.1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{.475\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \Vertex[label=$s$]{s}
-            \Vertex[label=$v_1$, x=2, y=2]{1}
-            \Vertex[label=$v_2$, x=2, y=-2]{2}
-            \Vertex[label=$t$, x=4, y=0]{t}
-            \Edge[Direct, label=3](1)(s)
-            \Edge[Direct, label=1, bend=15](s)(2)
-            \Edge[Direct, label=2, bend=15](2)(s)
-            \Edge[Direct, label=1](2)(1)
-            \Edge[Direct, label=4, bend=15](1)(t)
-            \Edge[Direct, label=3, bend=15](t)(1)
-            \Edge[Direct, label=2](t)(2)
-        \end{tikzpicture}
-        \caption{durch $f$ induziertes Restnetzwerk $G_f = (V,E_f)$}
-        \label{fig:residual_network.2}
-    \end{subfigure}
-    \caption{Induktion eines Restnetzwerkes}
-    \label{fig:residual_network}
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{.475\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=2]{1}
+			\Vertex[label=$v_2$, x=2, y=-2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=2/3](s)(2)
+			\Edge[Direct, label=1](2)(1)
+			\Edge[Direct, label=3/7](1)(t)
+			\Edge[Direct, label=2/2](2)(t)
+		\end{tikzpicture}
+		\caption{Fluss $f$ in einem Flussnetzwerk $G = (V,E)$}
+		\label{fig:residual_network.1}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.475\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=2]{1}
+			\Vertex[label=$v_2$, x=2, y=-2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\Edge[Direct, label=3](1)(s)
+			\Edge[Direct, label=1, bend=15](s)(2)
+			\Edge[Direct, label=2, bend=15](2)(s)
+			\Edge[Direct, label=1](2)(1)
+			\Edge[Direct, label=4, bend=15](1)(t)
+			\Edge[Direct, label=3, bend=15](t)(1)
+			\Edge[Direct, label=2](t)(2)
+		\end{tikzpicture}
+		\caption{durch $f$ induziertes Restnetzwerk $G_f = (V,E_f)$}
+		\label{fig:residual_network.2}
+	\end{subfigure}
+	\caption{Induktion eines Restnetzwerkes}
+	\label{fig:residual_network}
 \end{figure}
 
 \subsection{Erhöhung eines Flusses}
 Sei $f$ ein Fluss im Flussnetzwerk $G = (V,E)$ und $f'$ ein Fluss in $G_f$.
 Für die Erhöhung von $f$ um $f'$ schreiben wir $f \uparrow f'$ und definieren:
 \begin{equation}
-    (f \uparrow f')(u,v)=
-    \begin{cases}
-    f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$}\\
-    0 & \text{sonst}
-    \end{cases}
+	(f \uparrow f')(u,v)=
+	\begin{cases}
+		f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$} \\
+		0                          & \text{sonst}
+	\end{cases}
 \end{equation}
 Diese Definition entspricht zunächst nur einer einfachen Intuition.
 \textquote[{\cite[S. 730]{Cormen09}}]{Wir erhöhen den Fluss auf $(u, v)$ um $f'(u, v)$ und verringern ihn um $f'(v,u)$, da das Zurückfließenlassen eines Flusses auf einer entgegengerichteten Kante äquivalent dazu ist, den Fluss in dem ursprünglichen Netzwerk zu verringern.}
 \medbreak
 Die so erhaltene Funktion $f\uparrow f'$ erfüllt die Eigenschaften \eqref{only_on_edges} - \eqref{flow_continuation} -- ist also wieder ein Fluss -- und hat den Wert:
 \begin{equation}\label{flow_incr}
-    \lvert f\uparrow f' \rvert = \lvert f \rvert + \lvert f'\rvert
+	\lvert f\uparrow f' \rvert = \lvert f \rvert + \lvert f'\rvert
 \end{equation}
 Die Beweise für diese wichtigen Erkenntnisse würden den Rahmen dieser Zusammenfassung sprengen, sie sind jedoch sehr sehenswert.
 Es sei daher auf \cite[][S. 730-732]{Cormen09} verwiesen.
+An Abbildung \ref{fig:flow_incr} lässt sich die Erhöhung eines Flusses gut nachvollziehen.
+Man sieht gut, wie im dort entstandenen Flussnetzwerk $G_{f\uparrow f'}$ kein Fluss mehr fließen kann, da es keine ausgehende Kante von $s$ mehr gibt.
+Diese Beobachtung ist für das maxflow-mincut-Theorem interessant, das wir noch besprechen werden.
 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=2]{1}
+			\Vertex[label=$v_2$, x=2, y=-2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=2/3](s)(2)
+			\Edge[Direct, label=1](2)(1)
+			\Edge[Direct, label=3/7](1)(t)
+			\Edge[Direct, label=2/2](2)(t)
+		\end{tikzpicture}
+		\caption{$f$ in $G$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=2]{1}
+			\Vertex[label=$v_2$, x=2, y=-2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\Edge[Direct, label=3](1)(s)
+			\Edge[Direct, label=1/1, bend=15](s)(2)
+			\Edge[Direct, label=2, bend=15](2)(s)
+			\Edge[Direct, label=1/1](2)(1)
+			\Edge[Direct, label=1/4, bend=15](1)(t)
+			\Edge[Direct, label=3, bend=15](t)(1)
+			\Edge[Direct, label=2](t)(2)
+		\end{tikzpicture}
+		\caption{$f'$ in $G_f$}
+	\end{subfigure}
+	\vskip\baselineskip
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=2]{1}
+			\Vertex[label=$v_2$, x=2, y=-2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=3/3](s)(2)
+			\Edge[Direct, label=1/1](2)(1)
+			\Edge[Direct, label=4/7](1)(t)
+			\Edge[Direct, label=2/2](2)(t)
+		\end{tikzpicture}
+		\caption{$f\uparrow f'$ in $G$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=2]{1}
+			\Vertex[label=$v_2$, x=2, y=-2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\Edge[Direct, label=3](1)(s)
+			\Edge[Direct, label=3](1)(s)
+			\Edge[Direct, label=3](2)(s)
+			\Edge[Direct, label=1](1)(2)
+			\Edge[Direct, label=3, bend=15](1)(t)
+			\Edge[Direct, label=4, bend=15](t)(1)
+			\Edge[Direct, label=2](t)(2)
+		\end{tikzpicture}
+		\caption{$G_{f\uparrow f'}$}
+	\end{subfigure}
+	\caption{Erhöhung eines Flusses}
+	\label{fig:flow_incr}
+\end{figure}
 
 \section{\ff -Algorithmen}
 Zunächst soll die Klasse der \ff -Algorithmen erläutert werden.
@@ -272,12 +348,12 @@ Sei also $f$ ein Fluss im Flussnetzwerk $G$.
 Mittels eines geeigneten Algorithmus wird zunächst ein Pfad $p$ von $s$ nach $t$ im Restnetzwerk $G_f$ bestimmt.
 Dann lässt sich die Pfadkapazität wie folgt definieren:
 \begin{equation}
-    c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}
+	c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}
 \end{equation}
 \medbreak
 Und damit auch ein Fluss:
 \begin{equation}
-    f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}
+	f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}
 \end{equation}
 \medbreak
 Wegen \eqref{residual_edges} gilt offensichtlich $\lvert f_p\rvert > 0$.
@@ -287,23 +363,23 @@ Somit erhalten wir einen neuen Fluss $f\uparrow f_p$ mit $\lvert f\uparrow f_p \
 Mit den bisher gewonnenen Kenntnissen ist es uns jetzt möglich den \ff -Basisalgorithmus nachzuvollziehen.
 Als Hinweis zur Schreibweise sei gesagt, dass wir den Fluss auf einer Kante als Eigenschaft dieser Kante auffassen und über den Punktoperator darauf zugreifen.
 \begin{algorithm}[H]
-    \caption{\ff (G,s,t)}
-    \label{alg:ff}
-\begin{algorithmic}[1]
-\For{jede Kante $(u,v) \in G.E$}
-    \State $(u,v).f = 0$
-\EndFor
-\While{es existiert ein Pfad $p$ von $s$ nach $t$ in $G_f$}
-    \State $c_{f}(p) =$ min\{$c_{f}(u,v) \mid (u,v)$ liegt auf $p$\}
-    \For{jede Kante $(u,v)$ von $p$}
-        \If{$(u,v) \in G.E$}
-            \State $(u,v).f = (u,v).f + c_{f}(p)$
-        \Else
-            \State $(v,u).f = (v,u).f - c_{f}(p)$
-        \EndIf
-    \EndFor
-\EndWhile
-\end{algorithmic}
+	\caption{\ff (G,s,t)}
+	\label{alg:ff}
+	\begin{algorithmic}[1]
+		\For{jede Kante $(u,v) \in G.E$}
+		\State $(u,v).f = 0$
+		\EndFor
+		\While{es existiert ein Pfad $p$ von $s$ nach $t$ in $G_f$}
+		\State $c_{f}(p) =$ min\{$c_{f}(u,v) \mid (u,v)$ liegt auf $p$\}
+		\For{jede Kante $(u,v)$ von $p$}
+		\If{$(u,v) \in G.E$}
+		\State $(u,v).f = (u,v).f + c_{f}(p)$
+		\Else
+		\State $(v,u).f = (v,u).f - c_{f}(p)$
+		\EndIf
+		\EndFor
+		\EndWhile
+	\end{algorithmic}
 \end{algorithm}
 Zunächst initialisieren wir allen Fluss mit dem Wert $0$.
 Anschließend erhöhen wir den Fluss entlang eines Erweiterungspfades um die Pfadkapazität und fahren so lange fort, wie es noch Erweiterungspfade gibt.
@@ -316,7 +392,7 @@ Kurz zusammengefasst stellt dieses Theorem den Zusammenhang zwischen Flüssen in
 Ein Schnitt ist eine besondere Partitionierung des Flussnetzwerks in zwei Teilmengen, von denen eine die Quelle $s$ und die andere die Senke $t$ enthält.
 Unter anderem besagt das \textbf{maxflow-mincut-Theorem}:
 \begin{equation}
-    \lvert f\rvert\text{ ist maximal} \Leftrightarrow \text{es existiert kein Erweiterungspfad in $G_{f}$}
+	\lvert f\rvert\text{ ist maximal} \Leftrightarrow \text{es existiert kein Erweiterungspfad in $G_{f}$}
 \end{equation}
 Da wir für die Kantenkapazitäten im Flussnetzwerk natürliche Zahlen annehmen, wächst der Fluss in jeder Iteration des Algorithmus um mindestens eine Einheit.
 Offensichtlich muss ein maximaler Fluss auch einen Wert aus $\mathbb{N}$ haben und somit terminiert der Algorithmus nach endlich vielen Schritten mit einem korrekten Ergebnis.
@@ -332,15 +408,36 @@ Wir hatten bereits beobachtet, dass wir für ein Flussnetzwerk mit einem maximal
 Als Gesamtlaufzeit ergibt sich somit $\mathcal{O}(E\cdot\lvert f'\rvert)$
 Dass in diesem Spezialfall die Laufzeit nicht nur von der Größe der Eingabe, sondern auch von der Größe der Ausgabe abhängt, ist ein Nachteil des Basisalgorithmus.
 Er entsteht dadurch, dass die Reihenfolge, in der wir die Erweiterungspfade wählen entscheident ist.
+Besonders verständlich wird dies, wenn man Abbildung \ref{fig:bad_path} betrachtet.
+Hier könnten wir den Erweiterungspfad immer abwechselnd als $p = (s,v_1,v_2,t)$ und $p = (s,v_2,v_1,t)$ wählen, da sich die Kante zwischen $v_1$ und $v_2$ im Restnetzwerk durch die jeweilige Erhöhung umdreht.
 Wenn wir den Erweiterungspfad nicht beliebig, sondern als einen kürzesten Pfad zwischen $s$ und $t$ wählen, erhalten wir den Edmonds-Karp-Algorithmus.
 Benutzen wir Breitensuche für die Bestimmung eines solchen kürzesten Pfades, so verbessert sich die Laufzeit auf $\mathcal{O}(V\cdot E^2)$.
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\Vertex[label=$s$]{s}
+		\Vertex[label=$v_1$, x=2, y=1]{1}
+		\Vertex[label=$v_2$, x=2, y=-1]{2}
+		\Vertex[label=$t$, x=4]{t}
+		\Edge[Direct, label=100](s)(1)
+		\Edge[Direct, label=100](s)(2)
+		\Edge[Direct, label=1](1)(2)
+		\Edge[Direct, label=100](1)(t)
+		\Edge[Direct, label=100](2)(t)
+	\end{tikzpicture}
+	\caption{Der Wert $\lvert f'\rvert$ eines maximalen Flusses $f'$ für dieses Flussnetzwerk beträgt $\lvert f'\rvert = 200$.
+		Im ungünstigsten Fall müssen wir auch genau so oft einen Erweiterungspfad suchen.}
+	\label{fig:bad_path}
+\end{figure}
+
+\newpage
 \section{\pr -Algorithmen}
 Während die \ff -Algorithmen global nach einem Erweiterungspfad suchen, arbeiten \pr -Algorithmen wesentlich lokaler.
 Sie betrachten stets nur einen Knoten und seine direkte Umgebung gleichzeitig.
 Auch bei den \pr -Algorithmen gibt es mehrere Implementationsmöglichkeiten, die verschiedene Laufzeiten mit sich bringen.
 Wir werden hier ausschließlich den Basisalgorithmus betrachten.
-Zunächst wird dabei eine Datenstruktur initialisiert. 
+Zunächst wird dabei eine Datenstruktur initialisiert.
 Dann werden so lange Push- oder Relabel-Operationen ausgeführt, bis keine ausführbare Operation verbleibt.
 
 \subsection{Grundlagen}
@@ -348,12 +445,12 @@ Dann werden so lange Push- oder Relabel-Operationen ausgeführt, bis keine ausf�
 Statt in jedem Iterationsschritt einen gültigen Fluss zu erzeugen, verwenden sie Vorflüsse.
 Ein Vorfluss ist ein Fluss, der lediglich eine schwächere Form der Flusserhaltung erfüllen muss:
 \begin{equation}\label{eq:preflow}
-    \forall u\in V\setminus\{s\}:\sum_{v\in V}f(v,u)\geq\sum_{v\in V}f(u,v)
+	\forall u\in V\setminus\{s\}:\sum_{v\in V}f(v,u)\geq\sum_{v\in V}f(u,v)
 \end{equation}
 In einen Knoten $u$ kann also mehr Fluss hineinfließen, als aus ihm hinaus fließt.
 Die Differenz dieser Mengen wird der Flussüberschuss $e(u)$ genannt:
 \begin{equation}\label{eq:flow_excess}
-    e(u) = \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v)
+	e(u) = \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v)
 \end{equation}
 In den Knoten kann also ein beliebig großer Flussüberschuss gespeichert werden.
 Ist $e(u)>0$, so sagen wir $u$ ist überflutet.
@@ -369,38 +466,38 @@ Das schließt jedoch nicht aus, dass nicht auch von einem Knoten geringerer Höh
 Sei $G=(V,E)$ ein Flussnetzwerk und $f$ ein Vorfluss in $G$.
 Wir fordern weiterhin von der Höhenfunktion $h:V\to\mathbb{N}$:
 \begin{equation}\label{eq:height_function}
-    \forall (u,v)\in E_f: h(u)\leq h(v) + 1
+	\forall (u,v)\in E_f: h(u)\leq h(v) + 1
 \end{equation}
 Wir beobachten für später auch die Kontraposition:
 \begin{equation}\label{eq:contraposition_height}
-    \forall u,v\in V: h(u) > h(v) + 1\Rightarrow (u,v) \not\in E_f
+	\forall u,v\in V: h(u) > h(v) + 1\Rightarrow (u,v) \not\in E_f
 \end{equation}
 
 \subsection{Die Push-Operation}
 Wir werden sowohl für die Push-, als auch später für die Relabel-Operation Voraussetzungen festlegen, die erfüllt sein müssen um diese Operationen anwenden zu können.
 Die Push-Operation wird verwendet, um Flussüberschuss von einem Knoten zu einem anderen zu drücken.
 Wir können \textsc{Push}$(u,v)$ anwenden, wenn $u$ überflutet ist, die Restkapazität $c_f(u,v) > 0$ ist und $h(u) = h(v) + 1$ gilt.
-Die ersten beiden Bedingungen sind trivial. 
+Die ersten beiden Bedingungen sind trivial.
 Wie sollten wir Fluss von $u$ nach $v$ drücken, wenn $u$ nicht überflutet wäre oder die Kante $(u,v)$ bereits gesättigt wäre.
 Mit der dritten Bedingung legen wir fest, dass wir Fluss stets nur über eine Kante pushen, die zu einem Knoten mit einer um eine Einheit niedrigeren Höhe führt.
 Dies ergibt sich direkt aus \eqref{eq:contraposition_height}, wo wir gesehen haben, dass es keine Kanten im Restnetzwerk zu einem Knoten geben kann, dessen Höhen um mehr als eine Einheit niedriger ist.
 Solange es sich bei $h$ also tatsächlich um eine Höhenfunktion handelt, wäre ein Push über mehr als eine Höheneinheit also unzulässig.
 \begin{algorithm}[H]
-    \caption{\textsc{Push}$(u,v)$}
-    \label{alg:push}
-\begin{algorithmic}[1]
-\State{\textbf{// Anwendbar wenn:} $u.e > 0$, $c_{f}(u,v)>0$, und $u.h=v.h + 1$.}
-\State{\textbf{// Aktion:} Drücke $\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$ Flusseinheiten von $u$ nach $v$.}
-\State{}
-\State{$\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$}
-\If{$(u,v)\in E$}
-    \State{$(u,v).f = (u,v).f +\Delta_{f}(u,v)$}
-\Else
-    \State{$(v,u).f = (v,u).f -\Delta_{f}(u,v)$}
-\EndIf
-\State{$u.e = u.e - \Delta_{f}(u,v)$}
-\State{$v.e = v.e + \Delta_{f}(u,v)$}
-\end{algorithmic}
+	\caption{\textsc{Push}$(u,v)$}
+	\label{alg:push}
+	\begin{algorithmic}[1]
+		\State{\textbf{// Anwendbar wenn:} $u.e > 0$, $c_{f}(u,v)>0$, und $u.h=v.h + 1$.}
+		\State{\textbf{// Aktion:} Drücke $\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$ Flusseinheiten von $u$ nach $v$.}
+		\State{}
+		\State{$\Delta_{f}(u,v) =$ min$(u.e,c_{f}(u,v))$}
+		\If{$(u,v)\in E$}
+		\State{$(u,v).f = (u,v).f +\Delta_{f}(u,v)$}
+		\Else
+		\State{$(v,u).f = (v,u).f -\Delta_{f}(u,v)$}
+		\EndIf
+		\State{$u.e = u.e - \Delta_{f}(u,v)$}
+		\State{$v.e = v.e + \Delta_{f}(u,v)$}
+	\end{algorithmic}
 \end{algorithm}
 Wir wählen $\Delta_{f}(u,v)$ als das Minimum aus Flussüberschuss in $u$ und verbliebener Restkapazität $c_f(u,v)$.
 Danach verändern wir den Vorfluss auf der gewählten Kante und passen die Überschüsse an.
@@ -412,14 +509,14 @@ In diesem Fall wenden wir die Relabel-Operation auf den Knoten an, die seine Hö
 Bedingungen für die Ausführung von \textsc{Relabel}$(u)$ sind also, dass $e(u) > 0$ ist und $\forall (u,v)\in E_f: h(u) < h(v)$ gilt.
 Ist nämlich die Höhe aller Knoten, zu denen Restkanten führen höher als die von $u$, so können wir den Flussüberschuss in $u$ durch keine Push-Operation verringern.
 \begin{algorithm}[H]
-    \caption{\textsc{Relabel}$(u)$}
-    \label{alg:relabel}
-\begin{algorithmic}[1]
-\State{\textbf{// Anwendbar wenn:} $u.e > 0$, und $u.h \leq v.h$ für alle $v \in V$ mit $(u,v)\in E_f$.}
-\State{\textbf{// Aktion:} setze u.h auf einen höheren Wert.}
-\State{}
-\State{$u.h = 1 +$min\{$v.h \mid (u,v)\in E_f$\}}
-\end{algorithmic}
+	\caption{\textsc{Relabel}$(u)$}
+	\label{alg:relabel}
+	\begin{algorithmic}[1]
+		\State{\textbf{// Anwendbar wenn:} $u.e > 0$, und $u.h \leq v.h$ für alle $v \in V$ mit $(u,v)\in E_f$.}
+		\State{\textbf{// Aktion:} setze u.h auf einen höheren Wert.}
+		\State{}
+		\State{$u.h = 1 +$min\{$v.h \mid (u,v)\in E_f$\}}
+	\end{algorithmic}
 \end{algorithm}
 Wegen $e(u) = \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v) > 0$ muss es mindestens einen Knoten $v$ geben mit $f(v,u) > 0$.
 Daraus folgt direkt, dass $c_f(u,v) > 0$ und damit $(u,v)\in E_f$.
@@ -430,23 +527,23 @@ Da wir die Höhenfunktion nur in der Relabel-Operation verändern, können wir u
 Für den generischen \pr -Algorithmus benötigen wir nun nur noch einen initialen Vorfluss.
 Diesen erzeugen wir wie folgt:
 \begin{algorithm}[H]
-    \caption{Initialize-Preflow(G,s)}
-    \label{alg:initialize_preflow}
-\begin{algorithmic}[1]
-\For{jeden Knoten $v \in G.V$}
-    \State $v.h = 0$
-    \State $v.e = 0$
-\EndFor
-\For{jede Kante $(u,v)\in G.E$}
-    \State $(u,v).f = 0$
-\EndFor
-\State{$s.h = \lvert G.V\rvert$}
-\For{jeden Knoten $v$ mit $(s,v)\in G.E$}
-    \State $(s,v).f = c(s,v)$
-    \State $v.e = c(s,v)$
-    \State $s.e = s.e - c(s,v)$
-\EndFor
-\end{algorithmic}
+	\caption{Initialize-Preflow(G,s)}
+	\label{alg:initialize_preflow}
+	\begin{algorithmic}[1]
+		\For{jeden Knoten $v \in G.V$}
+		\State $v.h = 0$
+		\State $v.e = 0$
+		\EndFor
+		\For{jede Kante $(u,v)\in G.E$}
+		\State $(u,v).f = 0$
+		\EndFor
+		\State{$s.h = \lvert G.V\rvert$}
+		\For{jeden Knoten $v$ mit $(s,v)\in G.E$}
+		\State $(s,v).f = c(s,v)$
+		\State $v.e = c(s,v)$
+		\State $s.e = s.e - c(s,v)$
+		\EndFor
+	\end{algorithmic}
 \end{algorithm}
 Wir schicken also von der Quelle aus einen Fluss zu allen angrenzenden Knoten.
 Dabei wählen wir die Menge an Fluss genau gleich zur jeweiligen Kapazität der Kante.
@@ -457,15 +554,505 @@ Die Eigenschaft $h$ beschreibt also eine Höhenfunktion.
 \medbreak
 Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 \begin{algorithm}[H]
-    \caption{Generic-\pr}
-    \label{alg:generic_pr}
-\begin{algorithmic}[1]
-\State{Initialize-Preflow(G,s)}
-\While{es existiert eine ausführbare Push- oder Relabel-Operation}
-    \State{wähle eine ausführbare Push- oder Relabel-Operation und führe sie aus}
-\EndWhile
-\end{algorithmic}
+	\caption{Generic-\pr}
+	\label{alg:generic_pr}
+	\begin{algorithmic}[1]
+		\State{Initialize-Preflow(G,s)}
+		\While{es existiert eine ausführbare Push- oder Relabel-Operation}
+		\State{wähle eine ausführbare Push- oder Relabel-Operation und führe sie aus}
+		\EndWhile
+	\end{algorithmic}
 \end{algorithm}
+
+
+\begin{figure}[p]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3](s)(1)
+			\Edge[Direct, label=4](s)(2)
+			\Edge[Direct, label=3](1)(2)
+			\Edge[Direct, label=1](1)(t)
+			\Edge[Direct, label=5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=0.5]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=0]{s}
+			\Vertex[label=$v_1$, x=2, y=0]{1}
+			\Vertex[label=$v_2$, x=3, y=0]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=3](1)(2)
+			\Edge[Direct, label=1](1)(t)
+			\Edge[Direct, label=5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=0]{1}
+			\Vertex[label=$v_2$, x=3, y=0]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 3};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=3](1)(2)
+			\Edge[Direct, label=1](1)(t)
+			\Edge[Direct, label=5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=0, color=orange]{1}
+			\Vertex[label=$v_2$, x=3, y=0]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 3};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=3, color=orange](1)(2)
+			\Edge[Direct, label=1, color=orange](1)(t)
+			\Edge[Direct, label=5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=3, y=0]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 3};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=3, color=orange](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=3, y=0]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 2};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 1};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1, color=orange]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=2/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=3, y=0, color=orange]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 6};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 1};
+		\end{tikzpicture}
+	\end{subfigure}
+\end{figure}
+\begin{figure}
+	\ContinuedFloat
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1, color=orange]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=2/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5, color=orange](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=3, y=1, color=orange]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 6};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 1};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1, color=orange]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=2/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=3, y=1, color=orange]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 1};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1, color=orange]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=2/3, color=orange](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=3, y=2, color=orange]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 1};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=1/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=3, y=2]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 1};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1, color=orange]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=2/3, color=orange](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=3]{1}
+			\Vertex[label=$v_2$, x=3, y=2, color=orange]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 1};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=1/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=3, color=orange]{1}
+			\Vertex[label=$v_2$, x=3, y=4]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 1};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+\end{figure}
+\begin{figure}
+	\ContinuedFloat
+	\centering\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1, color=orange]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=3/3, color=orange](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=1/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=5, color=orange]{1}
+			\Vertex[label=$v_2$, x=3, y=4]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -7};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 1};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\Vertex[label=$s$]{s}
+			\Vertex[label=$v_1$, x=2, y=1]{1}
+			\Vertex[label=$v_2$, x=2, y=-1]{2}
+			\Vertex[label=$t$, x=4]{t}
+			\Edge[Direct, label=2/3](s)(1)
+			\Edge[Direct, label=4/4](s)(2)
+			\Edge[Direct, label=1/3](1)(2)
+			\Edge[Direct, label=1/1](1)(t)
+			\Edge[Direct, label=5/5](2)(t)
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.50]
+			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
+			\draw (5,0) node[anchor=north west] {$u \in V$};
+			\draw[thick,->] (0,0) -- (0,5) node[anchor=south east] {$h(u)$};
+			\foreach \y in {0,1,2,3,4}
+			\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+			\Vertex[label=$s$, x=1, y=4]{s}
+			\Vertex[label=$v_1$, x=2, y=5]{1}
+			\Vertex[label=$v_2$, x=3, y=4]{2}
+			\Vertex[label=$t$, x=4, y=0]{t}
+			\draw (5,5.5) node[anchor=south west, text=red] {\large u.e};
+			\draw (1,5.5) node[anchor=south, text=red] {\large -6};
+			\draw (2,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
+			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
+		\end{tikzpicture}
+	\end{subfigure}
+\end{figure}
 
 \subsection{Analyse des generischen \pr -Algorithmus}
 Die Korrektheit des \pr -Algorithmus lässt sich über einige Beobachtungen zur Höhenfunktion, sowie eine geeignete Schleifeninvariante beweisen.
