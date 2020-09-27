@@ -567,7 +567,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 
 \begin{figure}[p]
 	\centering
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -580,10 +580,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1](1)(t)
 			\Edge[Direct, label=5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-    \begin{subfigure}{0.45\textwidth}
-        \centering
+		\hfil
 		\begin{tikzpicture}[scale=0.5]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -600,9 +597,10 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
 		\end{tikzpicture}
+		\caption{Initiale Konfiguration. Links sind Flussnetzwerk und Fluss zu sehen, rechts werden die Höhe der Knoten im Diagramm, sowie deren Flussüberschuss in rot ausgeführt.}
 	\end{subfigure}
 	\vskip\baselineskip
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -615,10 +613,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1](1)(t)
 			\Edge[Direct, label=5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -635,9 +630,10 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
 		\end{tikzpicture}
+		\caption{Nach Initialize-Preflow}
 	\end{subfigure}
 	\vskip\baselineskip
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -650,10 +646,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1](1)(t)
 			\Edge[Direct, label=5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -670,8 +663,9 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
 		\end{tikzpicture}
+		\caption{Der aktuell betrachtete Knoten wird orange dargestellt. \textsc{Relabel}$(v_1)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -684,10 +678,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1, color=orange](1)(t)
 			\Edge[Direct, label=5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -704,8 +695,13 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
 		\end{tikzpicture}
+		\caption{Alle verfügbaren Push-Operationen werden ebenfalls markiert. \textsc{Push}$(v_1,t)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+\end{figure}
+\begin{figure}
+	\ContinuedFloat
+	\centering
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -718,10 +714,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -738,8 +731,10 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 4};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 1};
 		\end{tikzpicture}
+		\caption{\textsc{Push}$(v_1,v_2)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -752,10 +747,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -772,12 +764,10 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 6};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 1};
 		\end{tikzpicture}
+		\caption{\textsc{Relabel}$(v_2)$}
 	\end{subfigure}
-\end{figure}
-\begin{figure}
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -790,10 +780,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5, color=orange](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -810,8 +797,9 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 6};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 1};
 		\end{tikzpicture}
+		\caption{\textsc{Push}$(v_2,t)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -824,10 +812,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -844,8 +829,13 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 1};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+		\caption{\textsc{Relabel}$(v_2)$ ist wieder erlaubt, da $(v_2,t)\not\in E_f$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+\end{figure}
+\begin{figure}
+	\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -858,10 +848,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -878,8 +865,9 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 1};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+		\caption{\textsc{Push}$(v_2,v_1)$. Die Push-Operation betrachtet Restkapazitäten, hier wird jedoch nur das Flussnetzwerk gezeigt.}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -892,10 +880,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -912,8 +897,10 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+		\caption{\textsc{Relabel}$(v_1)$ und \textsc{Push}$(v_1,v_2)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+    \vskip\baselineskip	
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -926,10 +913,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -946,8 +930,9 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 1};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+		\caption{\textsc{Relabel}$(v_2)$ und \textsc{Push}$(v_2,v_1)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -960,10 +945,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -980,11 +962,13 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+		\caption{\textsc{Relabel}$(v_1)$. Die Höhe von $v_1$ übersteigt $s.h$ und wir können den Flussüberschuss auflösen.}
 	\end{subfigure}
 \end{figure}
 \begin{figure}
 	\ContinuedFloat
-	\centering\begin{subfigure}{0.45\textwidth}
+	\centering
+	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -997,10 +981,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -1017,8 +998,9 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+		\caption{\textsc{Push}$(v_1,s)$}
 	\end{subfigure}
-	\vskip\baselineskip	\begin{subfigure}{0.45\textwidth}
+	\vskip\baselineskip	\begin{subfigure}{0.95\textwidth}
 		\centering
 		\begin{tikzpicture}
 			\Vertex[label=$s$]{s}
@@ -1031,10 +1013,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\Edge[Direct, label=1/1](1)(t)
 			\Edge[Direct, label=5/5](2)(t)
 		\end{tikzpicture}
-	\end{subfigure}
-	\hfil
-	\begin{subfigure}{0.45\textwidth}
-		\centering
+		\hfil
 		\begin{tikzpicture}[scale=0.50]
 			\draw[step=1cm,gray,very thin] (0,0) grid (5,5);
 			\draw (5,0) node[anchor=north west] {$u \in V$};
@@ -1051,6 +1030,10 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 6};
 		\end{tikzpicture}
+        \caption{Finale Konfiguration. 
+                Es existiert keine ausführbare Push- oder Relabel-Operation mehr. 
+                Der Algorithmus hat einen maximalen Fluss $f$ mit $\lvert f\rvert = 6$ gefunden.
+                Offensichtlich gilt immer $\lvert f\rvert = - s.e$ für einen maximalen Fluss $f$.} %TODO
 	\end{subfigure}
 \end{figure}
 
