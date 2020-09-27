@@ -1,11 +1,5 @@
 \documentclass[12pt,a4paper,titlepage,onecolumn,ngerman,bibliography=totocnumbered]{scrartcl}
 
-%META-INFORMATION
-\author{Maximilian Moeller}
-\title{Maximaler Fluss in Flussnetzwerken}
-\subtitle{Proseminar Theoretische Informatik 2020}
-\date{\today}
-
 %PACKAGES
 \usepackage[utf8]{inputenc}
 \usepackage[german]{babel}
@@ -19,6 +13,7 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{float}
+\usepackage[affil-it]{authblk}
 
 %OPTIONS
 %no "then" or "do" in algorithm
@@ -51,7 +46,15 @@
 \newcommand{\pr}{Push/Relabel}
 
 \begin{document}
+%META-INFORMATION
+\author{Maximilian Moeller}
+\title{Maximaler Fluss in Flussnetzwerken}
+\subtitle{Proseminar Theoretische Informatik 2020}
+\affil{Fakultät Informatik, TU Dresden}
+\date{\today}
+
 \maketitle
+
 \tableofcontents
 
 \begin{abstract}
@@ -63,6 +66,10 @@
 	in vielen praktischen Fällen Anwendung findet.
 	Überall dort, wo die Menge einer zwischen verschiedenen Punkten transportierten Ware maximiert werden soll, kann auf die hier entwickelten Lösungen zurückgegriffen werden.
 	Als Beispiele seien die Informationsübertragung in Computernetzwerken oder der Flüssigkeitstransport in Rohrleitungssystemen genannt.
+	\medbreak
+	Sämtliche Definitionen und Code-Beispiele entstammen \cite{Cormen09}.
+	Sie wurden lediglich in ihrer Notation angepasst.
+	Die Idee zur Visualisierung des \pr -Algorithmus entstammt \cite{PR-Visual}.
 \end{abstract}
 
 \section{Grundlagen}
@@ -80,11 +87,9 @@ Außerdem fordern wir:
 \end{equation}
 Wir verbieten also entgegengerichtete Kantenpaare.
 Darüber hinaus darf es in einem Flussnetzwerk auch keine reflexiven Kanten -- also Kanten mit gleichem Start- und Zielknoten -- geben.
-Statt zu zeigen, dass dies keine echten Einschränkungen sind, sei hier auf \cite[][S. 724 f.]{Cormen09} verwiesen.
-\medbreak
+Statt zu zeigen, dass dies keine echten Einschränkungen sind, sei hier auf \cite[][S. 724 f.]{Cormen09} verwiesen.\\
 Jedes Flussnetzwerk enthält zwei besondere Knoten: Eine Quelle $s$ und eine Senke $t$.
 Der Einfachheit halber liege jeder Knoten $v \in V$ auf einem Pfad von $s$ nach $t$.\\
-Abbildung \ref{fig:flow_network.1} zeigt ein Beispiel für ein Flussnetzwerk.
 
 \subsection{Fluss in Flussnetzwerken}
 Ein Fluss $f$ in einem Flussnetzwerk $G=(V,E)$ ist eine Funktion $f: V \times V \to \mathfrak{B}$.
@@ -94,9 +99,9 @@ Dabei muss ein Fluss drei besondere Bedingungen erfüllen:
 	 & \forall u,v\in V\colon 0\leq f(u,v)\leq c(u,v) \label{limited_by_capacity}                                \\
 	 & \forall u\in V\setminus\{s,t\}\colon\sum_{v\in V} f(v,u) = \sum_{v\in V} f(u,v) \label{flow_continuation}
 \end{align}
+Ein Fluss tritt aus der Quelle $s$ aus und fließt über die Kanten und Knoten bis zur Senke $t$. 
 Die Eigenschaft \eqref{flow_continuation} trägt den Namen Flusserhaltung.
-Im Beispiel des Stromflusses entspricht sie der Kirchhoffschen Knotenregel.\\
-Abbildung \ref{fig:flow_network.2} zeigt einen Fluss.
+Im Beispiel des Stromflusses entspricht sie der Kirchhoffschen Knotenregel.
 
 \begin{figure}[H]
 	\centering
@@ -152,7 +157,7 @@ Der Wert $\lvert f \rvert$ eines Flusses $f$ ist definiert als:
 \end{equation}
 Er entspricht also der Menge an Fluss, die aus der Quelle $s$ herausfließt.
 Wegen \eqref{flow_continuation} also auch der Menge an Fluss, die in die Senke $t$ hineinfließt.
-Häufig enthält ein Flussnetzwerk keine eingehenden Kanten zur Quelle, womit sich die Gleichung zu $\lvert f \rvert := \sum_{u\in V} f(s,u)$ vereinfacht.
+Häufig enthält ein Flussnetzwerk keine eingehenden Kanten zur Quelle, womit sich die Gleichung zu $\lvert f \rvert = \sum_{u\in V} f(s,u)$ vereinfacht.
 Wir können nun das maximaler-Fluss-Problem formal definieren:
 
 \begin{definition}
@@ -171,7 +176,7 @@ Sie existieren jedoch nicht für sich, sondern werden durch den Fluss in einem F
 Sei $G=(V,E)$ ein Flussnetzwerk und $f$ ein Fluss in $G$.
 Die Restkapazität einer Kante ist definiert als:
 \begin{equation}\label{residual_capacity}
-	c_{f}(u,v) =
+	c_{f}(u,v) :=
 	\begin{cases}
 		c(u,v) - f(u,v) & \text{falls $(u,v)\in E$}  \\
 		f(v,u)          & \text{falls $(v,u) \in E$} \\
@@ -181,7 +186,7 @@ Die Restkapazität einer Kante ist definiert als:
 Wegen \eqref{no_parallel} tritt immer nur genau einer dieser Fälle ein.
 Daraus können wir die Menge der Restkanten definieren:
 \begin{equation}\label{residual_edges}
-	E_f = \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}
+	E_f := \{ (u,v) \in V \times V \mid c_{f}(u,v) > 0\}
 \end{equation}
 Dann ist das durch $f$ induzierte Restnetzwerk $G_f=(V,E_f)$.
 Abbildung \ref{fig:residual_network} zeigt ein Beispiel dafür.
@@ -242,7 +247,7 @@ Auch der Wert $\lvert f'\rvert$ eines Flusses $f'$ in einem Restnetzwerk ist ana
 Sei $f$ ein Fluss im Flussnetzwerk $G = (V,E)$ und $f'$ ein Fluss in $G_f$.
 Für die Erhöhung von $f$ um $f'$ schreiben wir $f \uparrow f'$ und definieren:
 \begin{equation}
-	(f \uparrow f')(u,v)=
+	(f \uparrow f')(u,v):=
 	\begin{cases}
 		f(u,v) + f'(u,v) - f'(v,u) & \text{falls $(u,v) \in E$} \\
 		0                          & \text{sonst}
@@ -348,12 +353,12 @@ Sei also $f$ ein Fluss im Flussnetzwerk $G$.
 Mittels eines geeigneten Algorithmus wird zunächst ein Pfad $p$ von $s$ nach $t$ im Restnetzwerk $G_f$ bestimmt.
 Dann lässt sich die Pfadkapazität wie folgt definieren:
 \begin{equation}
-	c_f(p) = min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}
+	c_f(p) := min\{ c_f(u,v)\mid (u,v) \text{ liegt auf $p$}\}
 \end{equation}
 \medbreak
 Und damit auch ein Fluss:
 \begin{equation}
-	f_p(u,v) = \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}
+	f_p(u,v) := \begin{cases}c_f(p) & \text{falls $(u,v)$ auf $p$ liegt}\\0 & \text{sonst}\end{cases}
 \end{equation}
 \medbreak
 Wegen \eqref{residual_edges} gilt offensichtlich $\lvert f_p\rvert > 0$.
@@ -426,8 +431,7 @@ Benutzen wir Breitensuche für die Bestimmung eines solchen kürzesten Pfades, s
 		\Edge[Direct, label=100](1)(t)
 		\Edge[Direct, label=100](2)(t)
 	\end{tikzpicture}
-	\caption{Der Wert $\lvert f'\rvert$ eines maximalen Flusses $f'$ für dieses Flussnetzwerk beträgt $\lvert f'\rvert = 200$.
-		Im ungünstigsten Fall müssen wir auch genau so oft einen Erweiterungspfad suchen.}
+	\caption{}
 	\label{fig:bad_path}
 \end{figure}
 
@@ -450,7 +454,7 @@ Ein Vorfluss ist ein Fluss, der lediglich eine schwächere Form der Flusserhaltu
 In einen Knoten $u$ kann also mehr Fluss hineinfließen, als aus ihm hinaus fließt.
 Die Differenz dieser Mengen wird der Flussüberschuss $e(u)$ genannt:
 \begin{equation}\label{eq:flow_excess}
-	e(u) = \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v)
+	e(u) := \sum_{v\in V}f(v,u) -\sum_{v\in V}f(u,v)
 \end{equation}
 In den Knoten kann also ein beliebig großer Flussüberschuss gespeichert werden.
 Ist $e(u)>0$, so sagen wir $u$ ist überflutet.
@@ -563,9 +567,9 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 		\EndWhile
 	\end{algorithmic}
 \end{algorithm}
+Auf den nachfolgenden Seiten soll ein Beispiel für die Ausführung des generischen \pr -Algorithmus gegeben werden.
 
-
-\begin{figure}[p]
+\begin{figure}[H]
 	\centering
 	\begin{subfigure}{0.95\textwidth}
 		\centering
@@ -597,7 +601,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 			\draw (3,5.5) node[anchor=south, text=red] {\large 0};
 			\draw (4,5.5) node[anchor=south, text=red] {\large 0};
 		\end{tikzpicture}
-		\caption{Initiale Konfiguration. Links sind Flussnetzwerk und Fluss zu sehen, rechts werden die Höhe der Knoten im Diagramm, sowie deren Flussüberschuss in rot ausgeführt.}
+		\caption{Initiale Konfiguration. Links sind Flussnetzwerk und Fluss zu sehen, rechts werden die Höhe der Knoten im Diagramm, sowie deren Flussüberschuss in rot aufgeführt.}
 	\end{subfigure}
 	\vskip\baselineskip
 	\begin{subfigure}{0.95\textwidth}
@@ -698,7 +702,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 		\caption{Alle verfügbaren Push-Operationen werden ebenfalls markiert. \textsc{Push}$(v_1,t)$}
 	\end{subfigure}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\ContinuedFloat
 	\centering
 	\begin{subfigure}{0.95\textwidth}
@@ -832,7 +836,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 		\caption{\textsc{Relabel}$(v_2)$ ist wieder erlaubt, da $(v_2,t)\not\in E_f$}
 	\end{subfigure}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\ContinuedFloat
     \centering
     \begin{subfigure}{0.95\textwidth}
@@ -965,7 +969,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
 		\caption{\textsc{Relabel}$(v_1)$. Die Höhe von $v_1$ übersteigt $s.h$ und wir können den Flussüberschuss auflösen.}
 	\end{subfigure}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\ContinuedFloat
 	\centering
 	\begin{subfigure}{0.95\textwidth}
@@ -1033,7 +1037,7 @@ Der generische \pr -Algorithmus setzt sich wie folgt zusammen:
         \caption{Finale Konfiguration. 
                 Es existiert keine ausführbare Push- oder Relabel-Operation mehr. 
                 Der Algorithmus hat einen maximalen Fluss $f$ mit $\lvert f\rvert = 6$ gefunden.
-                Offensichtlich gilt immer $\lvert f\rvert = - s.e$ für einen maximalen Fluss $f$.} %TODO
+                Offensichtlich gilt bei Terminierung immer $\lvert f\rvert = - s.e$ für einen maximalen Fluss $f$.}
 	\end{subfigure}
 \end{figure}
 
@@ -1061,6 +1065,7 @@ Einige der derzeit schnellsten bekannten Algorithmen entstammen der Klasse der \
 Besonders über den Zusammenhang mit den Schnitten, den wir nur kurz besprochen haben, erhalten wir interessante Anwendungsfälle.
 Das automatisierte Unterscheiden zwischen Vordergrund und Hintergrund in einer Bildbearbeitungssoftware lässt sich beispielsweise auf ein maximaler-Fluss-Problem zurückführen.
 Auch zum effizienten Errechnen maximaler bipartiter Matchings können diese Algorithem benutzt werden, zum Beispiel bei der bestmöglichen Zuteilung von Ressourcen zu Verbrauchern.
+Die hochinteressante Frage, ob ein Baseball-Team noch die Playoffs erreichen kann, lässt sich ebenfalls als maximaler-Fluss-Problem vormulieren. \parencite{baseball}
 \newpage
 \printbibliography
 \end{document}
