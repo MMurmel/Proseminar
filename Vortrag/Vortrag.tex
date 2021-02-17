@@ -30,8 +30,9 @@
 \usepackage{adjustbox}
 \usepackage{subcaption}
 
-%BIBTEX
-\usepackage[numbers,square]{natbib}
+%BIBLATEX
+\usepackage[style=alphabetic]{biblatex}
+\addbibresource{../../references.bib}
 \usepackage{url}
 %smaller URLs
 \renewcommand{\UrlFont}{\small\tt}
@@ -50,7 +51,7 @@
 \frametitle{Gliederung}
 \tableofcontents
 \note[item]{Beweise nicht ausgeführt, nur Beweisideen}
-alle Codesnippets und Definitionen aus \citep{Cormen09}
+alle Codesnippets und Definitionen aus \cite{Cormen09}
 \end{frame}
 
 %TODO: Motivation neu schreiben
@@ -1048,8 +1049,7 @@ Zusammenfassung
 \begin{frame}
 \frametitle{Literatur}
 \nocite{PR-Visual}
-\bibliography{../../references}
-\bibliographystyle{alpha}
+\printbibliography
 \end{frame}
 
 \end{document}
